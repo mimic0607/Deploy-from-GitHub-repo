@@ -13,7 +13,7 @@ export default function CryptoTools() {
   const { toast } = useToast();
   
   // Encryption state
-  const [encryptionMethod, setEncryptionMethod] = useState<'aes' | 'fernet'>('aes');
+  const [encryptionMethod, setEncryptionMethod] = useState<'aes' | 'fernet' | 'tripledes' | 'blowfish'>('aes');
   const [encryptionKey, setEncryptionKey] = useState('');
   const [showEncryptionKey, setShowEncryptionKey] = useState(false);
   const [textToEncrypt, setTextToEncrypt] = useState('');
@@ -26,7 +26,7 @@ export default function CryptoTools() {
   const [isDecrypting, setIsDecrypting] = useState(false);
   
   // Hashing state
-  const [hashAlgorithm, setHashAlgorithm] = useState('sha256');
+  const [hashAlgorithm, setHashAlgorithm] = useState<'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160'>('sha256');
   const [textToHash, setTextToHash] = useState('');
   const [hashResult, setHashResult] = useState('');
   const [isHashing, setIsHashing] = useState(false);
@@ -130,7 +130,7 @@ export default function CryptoTools() {
     
     try {
       setIsHashing(true);
-      const result = await hashText(textToHash, hashAlgorithm as any);
+      const result = await hashText(textToHash, hashAlgorithm);
       setHashResult(result.hash);
       
       toast({
@@ -205,14 +205,16 @@ export default function CryptoTools() {
               <Label className="block text-sm font-medium mb-1">Encryption Method</Label>
               <Select 
                 value={encryptionMethod} 
-                onValueChange={(value: 'aes' | 'fernet') => setEncryptionMethod(value)}
+                onValueChange={(value: 'aes' | 'fernet' | 'tripledes' | 'blowfish') => setEncryptionMethod(value)}
               >
-                <SelectTrigger className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select encryption method" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="aes">AES-256</SelectItem>
-                  <SelectItem value="fernet">Fernet</SelectItem>
+                <SelectContent className="bg-white text-gray-800">
+                  <SelectItem value="aes">AES-256 (Recommended)</SelectItem>
+                  <SelectItem value="fernet">Fernet (Implementation of AES-128-CBC)</SelectItem>
+                  <SelectItem value="tripledes">Triple DES (Legacy)</SelectItem>
+                  <SelectItem value="blowfish">Blowfish (Legacy)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -319,15 +321,17 @@ export default function CryptoTools() {
               <Label className="block text-sm font-medium mb-1">Hashing Algorithm</Label>
               <Select 
                 value={hashAlgorithm} 
-                onValueChange={setHashAlgorithm}
+                onValueChange={(value: 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160') => setHashAlgorithm(value)}
               >
-                <SelectTrigger className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select hashing algorithm" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sha256">SHA-256</SelectItem>
-                  <SelectItem value="sha512">SHA-512</SelectItem>
-                  <SelectItem value="md5">MD5 (Not recommended)</SelectItem>
+                <SelectContent className="bg-white text-gray-800">
+                  <SelectItem value="sha256">SHA-256 (Recommended)</SelectItem>
+                  <SelectItem value="sha512">SHA-512 (Strong)</SelectItem>
+                  <SelectItem value="blake2b">BLAKE2b (Fast & Secure)</SelectItem>
+                  <SelectItem value="ripemd160">RIPEMD-160 (Bitcoin)</SelectItem>
+                  <SelectItem value="md5">MD5 (Not secure, legacy only)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

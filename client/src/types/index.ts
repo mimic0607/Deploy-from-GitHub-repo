@@ -64,6 +64,9 @@ export interface GeneratedPassword {
 }
 
 // Crypto Types
+export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish';
+export type HashingAlgorithm = 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160';
+
 export interface EncryptionResult {
   encrypted: string;
   iv?: string;
@@ -75,12 +78,12 @@ export interface DecryptionRequest {
   iv?: string;
   tag?: string;
   key: string;
-  algorithm: string;
+  algorithm: EncryptionAlgorithm;
 }
 
 export interface HashingRequest {
   text: string;
-  algorithm: string;
+  algorithm: HashingAlgorithm;
 }
 
 export interface HashResult {
