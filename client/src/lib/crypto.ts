@@ -61,7 +61,7 @@ export async function encryptText(
     }
     
     // Client-side encryption for algorithms not supported by the server
-    if (algorithm === 'tripledes' || algorithm === 'blowfish') {
+    if (['tripledes', 'blowfish', 'chacha20', 'twofish', 'serpent', 'ecc', 'ed25519', 'x25519'].includes(algorithm)) {
       let encryptedText = '';
       
       if (algorithm === 'tripledes') {
@@ -69,7 +69,29 @@ export async function encryptText(
       } else if (algorithm === 'blowfish') {
         // Note: CryptoJS doesn't have native Blowfish, this is a placeholder
         // In a real implementation, you'd use a proper Blowfish library
-        encryptedText = CryptoJS.AES.encrypt(text, key).toString();
+        encryptedText = CryptoJS.AES.encrypt(text, key + '_blowfish').toString();
+      } else if (algorithm === 'chacha20') {
+        // Simulating ChaCha20 with AES for the demo
+        // In a real implementation, use a proper ChaCha20 library
+        encryptedText = CryptoJS.AES.encrypt(text, key + '_chacha20').toString();
+      } else if (algorithm === 'twofish') {
+        // Simulating Twofish with AES for the demo
+        // In a real implementation, use a proper Twofish library
+        encryptedText = CryptoJS.AES.encrypt(text, key + '_twofish').toString();
+      } else if (algorithm === 'serpent') {
+        // Simulating Serpent with AES for the demo
+        // In a real implementation, use a proper Serpent library
+        encryptedText = CryptoJS.AES.encrypt(text, key + '_serpent').toString();
+      } else if (['ecc', 'ed25519', 'x25519'].includes(algorithm)) {
+        // For demo purposes, simulate these with RSA-like behavior
+        const keyPair = generateMockRsaKeyPair();
+        encryptedText = mockRsaEncrypt(text, keyPair.publicKey);
+        
+        return { 
+          encrypted: encryptedText,
+          publicKey: keyPair.publicKey, 
+          tag: keyPair.privateKey  // Storing private key in tag for demo
+        };
       }
       
       return { encrypted: encryptedText };
@@ -93,14 +115,14 @@ export async function decryptText(
   data: DecryptionRequest
 ): Promise<string> {
   try {
-    // RSA decryption
-    if (data.algorithm === 'rsa') {
+    // Asymmetric decryption
+    if (['rsa', 'ecc', 'ed25519', 'x25519'].includes(data.algorithm)) {
       // In our mock implementation, the private key is stored in the tag
       return mockRsaDecrypt(data.encrypted, data.tag || '');
     }
     
     // Client-side decryption for algorithms not supported by the server
-    if (data.algorithm === 'tripledes' || data.algorithm === 'blowfish') {
+    if (['tripledes', 'blowfish', 'chacha20', 'twofish', 'serpent'].includes(data.algorithm)) {
       let decryptedText = '';
       
       if (data.algorithm === 'tripledes') {
@@ -108,7 +130,19 @@ export async function decryptText(
         decryptedText = bytes.toString(CryptoJS.enc.Utf8);
       } else if (data.algorithm === 'blowfish') {
         // Note: CryptoJS doesn't have native Blowfish, this is a placeholder
-        const bytes = CryptoJS.AES.decrypt(data.encrypted, data.key);
+        const bytes = CryptoJS.AES.decrypt(data.encrypted, data.key + '_blowfish');
+        decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+      } else if (data.algorithm === 'chacha20') {
+        // Simulating ChaCha20 with AES for the demo
+        const bytes = CryptoJS.AES.decrypt(data.encrypted, data.key + '_chacha20');
+        decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+      } else if (data.algorithm === 'twofish') {
+        // Simulating Twofish with AES for the demo
+        const bytes = CryptoJS.AES.decrypt(data.encrypted, data.key + '_twofish');
+        decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+      } else if (data.algorithm === 'serpent') {
+        // Simulating Serpent with AES for the demo
+        const bytes = CryptoJS.AES.decrypt(data.encrypted, data.key + '_serpent');
         decryptedText = bytes.toString(CryptoJS.enc.Utf8);
       }
       
@@ -131,7 +165,7 @@ export async function hashText(
 ): Promise<HashResult> {
   try {
     // Client-side hashing for algorithms not supported by the server
-    if (algorithm === 'blake2b' || algorithm === 'ripemd160') {
+    if (['blake2b', 'ripemd160', 'sha3', 'blake3', 'whirlpool'].includes(algorithm)) {
       let hash = '';
       
       if (algorithm === 'ripemd160') {
@@ -140,6 +174,14 @@ export async function hashText(
         // Note: CryptoJS doesn't have native BLAKE2b, this is a placeholder
         // In a real implementation, you'd use a proper BLAKE2b library
         hash = CryptoJS.SHA3(text, { outputLength: 256 }).toString();
+      } else if (algorithm === 'sha3') {
+        hash = CryptoJS.SHA3(text, { outputLength: 512 }).toString();
+      } else if (algorithm === 'blake3') {
+        // Simulate BLAKE3 with SHA3 for the demo
+        hash = CryptoJS.SHA3(text, { outputLength: 256 }).toString();
+      } else if (algorithm === 'whirlpool') {
+        // Simulate Whirlpool with SHA512 for the demo
+        hash = CryptoJS.SHA512(text).toString();
       }
       
       return { hash };

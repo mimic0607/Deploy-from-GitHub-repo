@@ -1,0 +1,40 @@
+Encryption Algorithms
+✅ Symmetric Encryption (same key for encryption and decryption)
+Algorithm	Type	Strength	Use Cases
+AES (Advanced Encryption Standard)	Block cipher	128, 192, 256-bit	Most widely used (e.g., file encryption, TLS, disk encryption)
+ChaCha20	Stream cipher	256-bit	Mobile devices, VPNs, faster on low-power devices
+Twofish	Block cipher	128, 192, 256-bit	Alternative to AES, less common but secure
+Serpent	Block cipher	128, 192, 256-bit	Very secure, but slower than AES
+✅ Recommendation: Use AES-256 (CBC or GCM) or ChaCha20-Poly1305 for performance + security.
+
+✅ Asymmetric Encryption (public/private key pair)
+Algorithm	Key Size	Strength	Use Cases
+RSA	2048 or 3072-bit	Secure, slower	Key exchange, digital signatures
+ECC (Elliptic Curve Cryptography)	256-bit (e.g., secp256r1)	Stronger per-bit than RSA	Faster, used in modern protocols like TLS, blockchain
+Ed25519	256-bit	Very secure, fast	Digital signatures (e.g., SSH, Git)
+X25519	256-bit	Fast, secure	Key exchange (e.g., in TLS, Signal)
+✅ Recommendation: Use ECC (Ed25519/X25519) over RSA for better performance and similar security.
+
+🔒 Hashing Algorithms
+✅ Cryptographic Hash Functions
+Algorithm	Output Size	Security	Use Cases
+SHA-256	256-bit	Very secure	Blockchain, file integrity, digital signatures
+SHA-512	512-bit	Very secure	More bits = better collision resistance
+SHA-3	256/384/512	Post-quantum secure	Modern secure hashing (alternative to SHA-2)
+BLAKE3	256-bit	Fast + secure	Super fast hashing, integrity checks
+Whirlpool	512-bit	Secure, less common	General purpose cryptographic hashing
+✅ Recommendation: Use SHA-256 or BLAKE3 for speed and security.
+
+🧂 Password Hashing Algorithms (Designed to be slow to resist brute-force)
+Algorithm	Strength	Notes
+bcrypt	Configurable cost	Battle-tested, widely used
+scrypt	Memory-hard	Resists GPU attacks
+Argon2	Memory & CPU hard	Winner of PHC (Password Hashing Competition)
+PBKDF2	Iterative hash	NIST recommended, used in many systems
+✅ Recommendation: Use Argon2id (preferred), or bcrypt with high cost factor.
+
+🧪 Bonus: Message Authentication / Integrity
+Algorithm	Purpose
+HMAC-SHA256	Hash-based Message Authentication Code
+Poly1305	Fast MAC with ChaCha20
+CMAC	Cipher-based MAC using AES

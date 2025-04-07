@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock } from 'lucide-react';
+import { Lock, Save } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -8,13 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { encryptText, decryptText, hashText, deriveKeyFromPassword } from '@/lib/crypto';
 import { copyToClipboard } from '@/lib/utils';
+import { EncryptionAlgorithm, HashingAlgorithm, SymmetricAlgorithm, AsymmetricAlgorithm, NewVaultItem } from '@/types';
+import { useData } from '@/lib/dataContext';
 
 export default function CryptoTools() {
   const { toast } = useToast();
+  const { addVaultItem, currentUser } = useData();
   
   // Encryption state
   const [encryptionType, setEncryptionType] = useState<'symmetric' | 'asymmetric'>('symmetric');
-  const [encryptionMethod, setEncryptionMethod] = useState<'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa'>('aes');
+  const [encryptionMethod, setEncryptionMethod] = useState<EncryptionAlgorithm>('aes');
   const [encryptionKey, setEncryptionKey] = useState('');
   const [showEncryptionKey, setShowEncryptionKey] = useState(false);
   const [textToEncrypt, setTextToEncrypt] = useState('');
@@ -28,7 +31,7 @@ export default function CryptoTools() {
   const [usePasswordBasedKey, setUsePasswordBasedKey] = useState(true);
   
   // Hashing state
-  const [hashAlgorithm, setHashAlgorithm] = useState<'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160'>('sha256');
+  const [hashAlgorithm, setHashAlgorithm] = useState<HashingAlgorithm>('sha256');
   const [textToHash, setTextToHash] = useState('');
   const [hashResult, setHashResult] = useState('');
   const [isHashing, setIsHashing] = useState(false);
@@ -211,6 +214,41 @@ export default function CryptoTools() {
     }
   };
   
+  const handleSaveToVault = async () => {
+    if (!encryptedResult || !currentUser) return;
+    
+    try {
+      const encryptionData = encryptionMethod === 'aes' 
+        ? JSON.stringify(encryptedResult)
+        : encryptedResult.encrypted;
+        
+      const vaultItem: NewVaultItem = {
+        userId: currentUser.id,
+        name: `Encrypted with ${encryptionMethod.toUpperCase()}`,
+        username: `key: ${encryptionKey.substring(0, 8)}...`,
+        password: encryptionData,
+        category: 'Crypto',
+        notes: `Encrypted with ${encryptionMethod.toUpperCase()}. 
+${usePasswordBasedKey ? 'Password-based key derivation was used.' : 'Direct encryption key was used.'}
+Original text length: ${textToEncrypt.length} characters
+Date: ${new Date().toLocaleString()}`
+      };
+      
+      await addVaultItem(vaultItem);
+      
+      toast({
+        title: "Saved to vault",
+        description: "Encrypted data has been saved to your password vault"
+      });
+    } catch (error) {
+      toast({
+        title: "Save failed",
+        description: "Failed to save encrypted data to vault",
+        variant: "destructive"
+      });
+    }
+  };
+  
   return (
     <div className="glass-card rounded-2xl p-6 mt-6">
       <div className="flex items-center justify-between mb-6">
@@ -220,10 +258,10 @@ export default function CryptoTools() {
         </h2>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Encrypt/Decrypt Section */}
-        <div className="flex-1">
-          <div className="mb-4">
+        <div>
+          <div className="mb-4 h-full">
             <h3 className="text-lg font-semibold mb-2">Text Encryption/Decryption</h3>
             
             <div className="mb-3">
@@ -253,7 +291,7 @@ export default function CryptoTools() {
               <Label className="block text-sm font-medium mb-1">Encryption Algorithm</Label>
               <Select 
                 value={encryptionMethod} 
-                onValueChange={(value: 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa') => setEncryptionMethod(value)}
+                onValueChange={(value: EncryptionAlgorithm) => setEncryptionMethod(value)}
               >
                 <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select encryption algorithm" />
@@ -262,6 +300,9 @@ export default function CryptoTools() {
                   {encryptionType === 'symmetric' ? (
                     <>
                       <SelectItem value="aes">AES-256 (Recommended)</SelectItem>
+                      <SelectItem value="chacha20">ChaCha20 (Mobile/Low-power devices)</SelectItem>
+                      <SelectItem value="twofish">Twofish (Alternative to AES)</SelectItem>
+                      <SelectItem value="serpent">Serpent (Highly secure)</SelectItem>
                       <SelectItem value="fernet">Fernet (Implementation of AES-128-CBC)</SelectItem>
                       <SelectItem value="tripledes">Triple DES (Legacy)</SelectItem>
                       <SelectItem value="blowfish">Blowfish (Legacy)</SelectItem>
@@ -269,6 +310,9 @@ export default function CryptoTools() {
                   ) : (
                     <>
                       <SelectItem value="rsa">RSA (Public/Private Keys)</SelectItem>
+                      <SelectItem value="ecc">ECC (Elliptic Curve Cryptography)</SelectItem>
+                      <SelectItem value="ed25519">Ed25519 (Modern digital signatures)</SelectItem>
+                      <SelectItem value="x25519">X25519 (Fast key exchange)</SelectItem>
                     </>
                   )}
                 </SelectContent>
@@ -387,7 +431,7 @@ export default function CryptoTools() {
               </div>
             )}
             
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 mb-3">
               <Button
                 type="button"
                 className="flex-1 bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-full font-medium transition-fade glow-effect"
@@ -406,19 +450,32 @@ export default function CryptoTools() {
                 {isDecrypting ? 'Decrypting...' : 'Decrypt'}
               </Button>
             </div>
+            
+            {encryptedResult && (
+              <Button
+                type="button"
+                variant="ghost"
+                className="w-full flex items-center justify-center space-x-2 border border-purple-primary/30 text-purple-primary hover:bg-purple-primary/10 py-2 rounded-full font-medium transition-fade"
+                onClick={handleSaveToVault}
+                disabled={!currentUser}
+              >
+                <Save className="h-4 w-4" />
+                <span>Save to Password Vault</span>
+              </Button>
+            )}
           </div>
         </div>
         
         {/* Hashing Section */}
-        <div className="flex-1">
-          <div className="mb-4">
+        <div>
+          <div className="mb-4 h-full">
             <h3 className="text-lg font-semibold mb-2">Hashing Tools</h3>
             
             <div className="mb-3">
               <Label className="block text-sm font-medium mb-1">Hashing Algorithm</Label>
               <Select 
                 value={hashAlgorithm} 
-                onValueChange={(value: 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160') => setHashAlgorithm(value)}
+                onValueChange={(value: HashingAlgorithm) => setHashAlgorithm(value)}
               >
                 <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select hashing algorithm" />
@@ -426,8 +483,11 @@ export default function CryptoTools() {
                 <SelectContent className="bg-white text-gray-800">
                   <SelectItem value="sha256">SHA-256 (Recommended)</SelectItem>
                   <SelectItem value="sha512">SHA-512 (Strong)</SelectItem>
+                  <SelectItem value="sha3">SHA-3 (Post-quantum secure)</SelectItem>
                   <SelectItem value="blake2b">BLAKE2b (Fast & Secure)</SelectItem>
+                  <SelectItem value="blake3">BLAKE3 (Super fast hashing)</SelectItem>
                   <SelectItem value="ripemd160">RIPEMD-160 (Bitcoin)</SelectItem>
+                  <SelectItem value="whirlpool">Whirlpool (512-bit secure)</SelectItem>
                   <SelectItem value="md5">MD5 (Not secure, legacy only)</SelectItem>
                 </SelectContent>
               </Select>

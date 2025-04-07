@@ -65,10 +65,10 @@ export interface GeneratedPassword {
 
 // Crypto Types
 export type EncryptionType = 'symmetric' | 'asymmetric';
-export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa';
-export type SymmetricAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish';
-export type AsymmetricAlgorithm = 'rsa';
-export type HashingAlgorithm = 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160';
+export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'chacha20' | 'twofish' | 'serpent' | 'rsa' | 'ecc' | 'ed25519' | 'x25519';
+export type SymmetricAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'chacha20' | 'twofish' | 'serpent';
+export type AsymmetricAlgorithm = 'rsa' | 'ecc' | 'ed25519' | 'x25519';
+export type HashingAlgorithm = 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160' | 'sha3' | 'blake3' | 'whirlpool';
 
 export interface EncryptionResult {
   encrypted: string;
