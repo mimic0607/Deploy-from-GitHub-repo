@@ -69,8 +69,8 @@ export default function PasswordStrengthChecker() {
   return (
     <div className="glass-card rounded-2xl p-6">
       <div className="text-center mb-4">
-        <div className="inline-block rounded-full h-16 w-16 flex items-center justify-center bg-purple-primary/20 mb-3">
-          <CheckCircle className="h-8 w-8 text-purple-primary" />
+        <div className="inline-block rounded-full h-16 w-16 flex items-center justify-center bg-purple-500/20 mb-3">
+          <CheckCircle className="h-8 w-8 text-purple-500" />
         </div>
         <h2 className="text-xl font-bold">Password Strength Checker</h2>
       </div>
@@ -81,7 +81,7 @@ export default function PasswordStrengthChecker() {
           placeholder="Enter password to check..."
           value={password}
           onChange={handlePasswordChange}
-          className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-3 px-4 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
+          className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-3 px-4 pr-10 focus:outline-none focus:border-purple-500 transition-fade"
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleAnalyzePassword();
           }}
@@ -100,11 +100,11 @@ export default function PasswordStrengthChecker() {
           <div className="mb-6">
             <div className="flex justify-between mb-2 items-center">
               <span className="text-sm font-medium">Strength Score</span>
-              <span className="text-purple-primary font-semibold">{analysis.score}/10</span>
+              <span className="text-purple-500 font-semibold">{analysis.score}/10</span>
             </div>
-            <div className="h-2 w-full bg-purple-dark/50 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-purple-800/50 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-purple-primary to-cyan-500"
+                className="h-full bg-gradient-to-r from-purple-500 to-cyan-500"
                 style={{ width: `${analysis.score * 10}%` }}
               ></div>
             </div>
@@ -181,9 +181,9 @@ export default function PasswordStrengthChecker() {
           </div>
           
           {analysis.suggestions.length > 0 && (
-            <div className="bg-purple-primary/10 p-4 rounded-lg mb-4">
+            <div className="bg-purple-500/10 p-4 rounded-lg mb-4">
               <h4 className="text-sm font-medium mb-2 flex items-center">
-                <Lightbulb className="h-4 w-4 text-purple-primary mr-2" />
+                <Lightbulb className="h-4 w-4 text-purple-500 mr-2" />
                 Improvement Suggestions
               </h4>
               <ul className="text-xs space-y-2 text-gray-300">
@@ -197,7 +197,7 @@ export default function PasswordStrengthChecker() {
       )}
       
       <Button
-        className="w-full bg-purple-primary hover:bg-purple-accent text-white py-3 rounded-full font-medium transition-fade glow-effect mt-2"
+        className="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-full font-medium transition-fade glow-effect mt-2"
         onClick={handleAnalyzePassword}
         disabled={analyzing}
         type="button"

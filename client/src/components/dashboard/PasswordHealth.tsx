@@ -35,12 +35,12 @@ export default function PasswordHealth() {
     <div className="glass-card rounded-2xl p-6 mt-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold flex items-center">
-          <HeartPulse className="h-6 w-6 text-purple-primary mr-2" />
+          <HeartPulse className="h-6 w-6 text-purple-500 mr-2" />
           Password Health Dashboard
         </h2>
         <Button
           variant="link"
-          className="text-sm text-purple-primary hover:text-purple-light transition-fade flex items-center"
+          className="text-sm text-purple-500 hover:text-purple-light transition-fade flex items-center"
           onClick={() => navigate('/vault')}
         >
           <span>View Full Report</span>
@@ -50,7 +50,7 @@ export default function PasswordHealth() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         {/* Overall Health Score */}
-        <div className="bg-purple-primary/10 rounded-xl p-4 text-center">
+        <div className="bg-purple-500/10 rounded-xl p-4 text-center">
           <h3 className="text-sm font-medium mb-2">Overall Health Score</h3>
           <div className="relative inline-block mb-1">
             <svg className="w-32 h-32" viewBox="0 0 36 36">
@@ -91,7 +91,7 @@ export default function PasswordHealth() {
         </div>
         
         {/* Password Strength Distribution */}
-        <div className="bg-purple-primary/10 rounded-xl p-4">
+        <div className="bg-purple-500/10 rounded-xl p-4">
           <h3 className="text-sm font-medium mb-2">Strength Distribution</h3>
           <div className="space-y-3">
             <div>
@@ -99,7 +99,7 @@ export default function PasswordHealth() {
                 <span>Strong</span>
                 <span>{strongCount} passwords</span>
               </div>
-              <div className="h-2 w-full bg-purple-dark/50 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-purple-800/50 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-success" 
                   style={{ width: `${percentStrong}%` }}
@@ -111,7 +111,7 @@ export default function PasswordHealth() {
                 <span>Medium</span>
                 <span>{mediumCount} passwords</span>
               </div>
-              <div className="h-2 w-full bg-purple-dark/50 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-purple-800/50 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-warning" 
                   style={{ width: `${percentMedium}%` }}
@@ -123,7 +123,7 @@ export default function PasswordHealth() {
                 <span>Weak</span>
                 <span>{weakCount} passwords</span>
               </div>
-              <div className="h-2 w-full bg-purple-dark/50 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-purple-800/50 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-danger" 
                   style={{ width: `${percentWeak}%` }}
@@ -131,10 +131,10 @@ export default function PasswordHealth() {
               </div>
             </div>
           </div>
-          <div className="mt-3 pt-3 border-t border-purple-primary/20">
+          <div className="mt-3 pt-3 border-t border-purple-500/20">
             <Button
               variant="outline"
-              className="w-full bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-1.5 rounded-full text-sm transition-fade"
+              className="w-full bg-transparent border border-purple-500 text-purple-500 hover:bg-purple-500/10 py-1.5 rounded-full text-sm transition-fade"
               onClick={() => navigate('/vault')}
             >
               Fix Weak Passwords
@@ -143,7 +143,7 @@ export default function PasswordHealth() {
         </div>
         
         {/* Security Alerts */}
-        <div className="bg-purple-primary/10 rounded-xl p-4">
+        <div className="bg-purple-500/10 rounded-xl p-4">
           <h3 className="text-sm font-medium mb-2">Security Alerts</h3>
           <div className="space-y-3">
             {breachedCount > 0 && (
@@ -165,8 +165,8 @@ export default function PasswordHealth() {
               </div>
             )}
             {reusedCount > 0 && (
-              <div className="flex items-start bg-purple-primary/10 p-2 rounded-lg">
-                <Copy className="h-4 w-4 text-purple-primary mt-0.5 mr-2" />
+              <div className="flex items-start bg-purple-500/10 p-2 rounded-lg">
+                <Copy className="h-4 w-4 text-purple-500 mt-0.5 mr-2" />
                 <div>
                   <p className="text-xs font-medium">{reusedCount} reused passwords detected</p>
                   <p className="text-xs text-gray-400">Using unique passwords is recommended</p>
@@ -190,10 +190,10 @@ export default function PasswordHealth() {
       {recentlyChanged.length > 0 && (
         <div>
           <h3 className="text-sm font-medium mb-3">Recently Changed Passwords</h3>
-          <div className="bg-purple-dark/50 rounded-xl overflow-hidden">
+          <div className="bg-purple-800/50 rounded-xl overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-purple-primary/20">
+                <tr className="border-b border-purple-500/20">
                   <th className="py-3 px-4 text-left font-medium">Service</th>
                   <th className="py-3 px-4 text-left font-medium">Username</th>
                   <th className="py-3 px-4 text-left font-medium">Changed</th>
@@ -202,7 +202,7 @@ export default function PasswordHealth() {
               </thead>
               <tbody>
                 {recentlyChanged.map((item, index) => (
-                  <tr key={item.id} className={index < recentlyChanged.length - 1 ? "border-b border-purple-primary/10" : ""}>
+                  <tr key={item.id} className={index < recentlyChanged.length - 1 ? "border-b border-purple-500/10" : ""}>
                     <td className="py-2 px-4">{item.name}</td>
                     <td className="py-2 px-4 text-gray-400">{item.username}</td>
                     <td className="py-2 px-4 text-gray-400">{formatDateRelative(item.createdAt)}</td>

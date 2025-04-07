@@ -280,7 +280,7 @@ Date: ${new Date().toLocaleString()}`);
     <div className="glass-card rounded-2xl p-6 mt-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold flex items-center">
-          <Lock className="h-6 w-6 text-purple-primary mr-2" />
+          <Lock className="h-6 w-6 text-purple-500 mr-2" />
           Cryptographic Tools
         </h2>
       </div>
@@ -304,7 +304,7 @@ Date: ${new Date().toLocaleString()}`);
                   }
                 }}
               >
-                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                   <SelectValue placeholder="Select encryption type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
@@ -320,7 +320,7 @@ Date: ${new Date().toLocaleString()}`);
                 value={encryptionMethod} 
                 onValueChange={(value: EncryptionAlgorithm) => setEncryptionMethod(value)}
               >
-                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                   <SelectValue placeholder="Select encryption algorithm" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
@@ -353,7 +353,7 @@ Date: ${new Date().toLocaleString()}`);
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-purple-primary px-2 h-6"
+                  className="text-xs text-purple-500 px-2 h-6"
                   onClick={() => {
                     // Generate a random key
                     const randomKey = Array.from(
@@ -377,7 +377,7 @@ Date: ${new Date().toLocaleString()}`);
                   placeholder={usePasswordBasedKey ? "Enter a memorable password..." : "Enter encryption key..."}
                   value={encryptionKey}
                   onChange={(e) => setEncryptionKey(e.target.value)}
-                  className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
+                  className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-500 transition-fade"
                 />
                 <button
                   type="button"
@@ -406,7 +406,7 @@ Date: ${new Date().toLocaleString()}`);
                   id="password-based-key"
                   checked={usePasswordBasedKey}
                   onChange={() => setUsePasswordBasedKey(!usePasswordBasedKey)}
-                  className="rounded border-purple-primary/50 text-purple-primary focus:ring-purple-primary"
+                  className="rounded border-purple-500/50 text-purple-500 focus:ring-purple-primary"
                 />
                 <label htmlFor="password-based-key" className="text-sm text-gray-300">
                   Use password-based key (easier to remember)
@@ -426,7 +426,7 @@ Date: ${new Date().toLocaleString()}`);
                 rows={5}
                 value={textToEncrypt}
                 onChange={(e) => setTextToEncrypt(e.target.value)}
-                className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               />
             </div>
             
@@ -442,7 +442,7 @@ Date: ${new Date().toLocaleString()}`);
                     }
                     rows={5}
                     readOnly
-                    className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
+                    className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-500 transition-fade"
                   />
                   <button
                     type="button"
@@ -461,7 +461,7 @@ Date: ${new Date().toLocaleString()}`);
             <div className="flex space-x-3">
               <Button
                 type="button"
-                className="flex-1 bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-lg font-medium transition-fade"
+                className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg font-medium transition-fade"
                 onClick={handleEncrypt}
                 disabled={isEncrypting}
               >
@@ -470,7 +470,7 @@ Date: ${new Date().toLocaleString()}`);
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-lg font-medium transition-fade"
+                className="flex-1 bg-transparent border border-purple-500 text-purple-500 hover:bg-purple-500/10 py-2 rounded-lg font-medium transition-fade"
                 onClick={handleDecrypt}
                 disabled={isDecrypting || !encryptedResult}
               >
@@ -480,7 +480,7 @@ Date: ${new Date().toLocaleString()}`);
                 <Button
                   type="button"
                   variant="outline"
-                  className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-lg font-medium transition-fade"
+                  className="flex-1 bg-transparent border border-purple-500 text-purple-500 hover:bg-purple-500/10 py-2 rounded-lg font-medium transition-fade"
                   onClick={handleSaveToVault}
                 >
                   <Save className="h-4 w-4 mr-2" />
@@ -502,7 +502,7 @@ Date: ${new Date().toLocaleString()}`);
                 value={hashAlgorithm} 
                 onValueChange={(value: HashingAlgorithm) => setHashAlgorithm(value)}
               >
-                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                   <SelectValue placeholder="Select hash algorithm" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
@@ -525,7 +525,7 @@ Date: ${new Date().toLocaleString()}`);
                 rows={5}
                 value={textToHash}
                 onChange={(e) => setTextToHash(e.target.value)}
-                className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               />
             </div>
             
@@ -537,7 +537,7 @@ Date: ${new Date().toLocaleString()}`);
                     value={hashResult}
                     rows={5}
                     readOnly
-                    className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
+                    className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-500 transition-fade"
                   />
                   <button
                     type="button"
@@ -555,7 +555,7 @@ Date: ${new Date().toLocaleString()}`);
             
             <Button
               type="button"
-              className="w-full bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-full font-medium transition-fade glow-effect"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-full font-medium transition-fade glow-effect"
               onClick={handleHash}
               disabled={isHashing}
             >
@@ -567,7 +567,7 @@ Date: ${new Date().toLocaleString()}`);
       
       {/* Save to Vault Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <DialogContent className="bg-purple-dark border border-purple-primary/30 text-white">
+        <DialogContent className="bg-purple-800 border border-purple-500/30 text-white">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">Save to Password Vault</DialogTitle>
             <DialogDescription className="text-gray-300">
@@ -583,7 +583,7 @@ Date: ${new Date().toLocaleString()}`);
                 value={vaultItemName}
                 onChange={(e) => setVaultItemName(e.target.value)}
                 placeholder="Enter a name for this item"
-                className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               />
             </div>
             
@@ -595,7 +595,7 @@ Date: ${new Date().toLocaleString()}`);
               >
                 <SelectTrigger 
                   id="vault-item-category"
-                  className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                  className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
                 >
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -618,7 +618,7 @@ Date: ${new Date().toLocaleString()}`);
                 onChange={(e) => setVaultItemNotes(e.target.value)}
                 placeholder="Enter additional notes"
                 rows={4}
-                className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               />
             </div>
           </div>
@@ -628,7 +628,7 @@ Date: ${new Date().toLocaleString()}`);
               type="button"
               variant="ghost"
               onClick={() => setShowSaveDialog(false)}
-              className="border border-purple-primary/30 text-white hover:bg-purple-primary/10"
+              className="border border-purple-500/30 text-white hover:bg-purple-500/10"
             >
               Cancel
             </Button>
@@ -636,7 +636,7 @@ Date: ${new Date().toLocaleString()}`);
               type="button"
               onClick={handleSaveConfirm}
               disabled={isSaving}
-              className="bg-purple-primary hover:bg-purple-accent text-white"
+              className="bg-purple-500 hover:bg-purple-600 text-white"
             >
               {isSaving ? 'Saving...' : 'Save to Vault'}
             </Button>

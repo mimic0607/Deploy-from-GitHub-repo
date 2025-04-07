@@ -91,10 +91,10 @@ export default function SecuritySettings() {
       <div>
         <h3 className="text-lg font-medium mb-4">Two-Factor Authentication (2FA)</h3>
         
-        <div className="bg-purple-primary/10 p-4 rounded-lg mb-4">
+        <div className="bg-purple-500/10 p-4 rounded-lg mb-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center">
-              <ShieldCheck className="h-5 w-5 text-purple-primary mr-2" />
+              <ShieldCheck className="h-5 w-5 text-purple-500 mr-2" />
               <h4 className="font-medium">Two-Factor Authentication</h4>
             </div>
             <Switch
@@ -126,7 +126,7 @@ export default function SecuritySettings() {
           {!twoFactor.enabled && twoFactor.setupStep === 0 && (
             <Button 
               variant="outline" 
-              className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+              className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
               onClick={setupTwoFactor}
             >
               Set Up Two-Factor Authentication
@@ -200,7 +200,7 @@ export default function SecuritySettings() {
                   </p>
                   <Button
                     variant="outline" 
-                    className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                     onClick={() => {
                       toast({
                         title: "Verification code sent",
@@ -222,10 +222,10 @@ export default function SecuritySettings() {
                     onChange={(e) => handleTwoFactorChange('verificationCode', e.target.value)}
                     placeholder="123456"
                     maxLength={6}
-                    className="bg-purple-dark/50 border border-purple-primary/30"
+                    className="bg-purple-800/50 border border-purple-500/30"
                   />
                   <Button
-                    className="bg-purple-primary hover:bg-purple-accent text-white"
+                    className="bg-purple-500 hover:bg-purple-600 text-white"
                     onClick={setupTwoFactor}
                   >
                     Verify
@@ -245,7 +245,7 @@ export default function SecuritySettings() {
               <div>
                 <Button
                   variant="outline" 
-                  className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                  className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                   onClick={() => handleTwoFactorChange('backupCodesVisible', !twoFactor.backupCodesVisible)}
                 >
                   {twoFactor.backupCodesVisible ? 'Hide Backup Codes' : 'Show Backup Codes'}
@@ -253,17 +253,17 @@ export default function SecuritySettings() {
               </div>
               
               {twoFactor.backupCodesVisible && (
-                <div className="bg-purple-dark/50 p-3 rounded-lg border border-purple-primary/30">
+                <div className="bg-purple-800/50 p-3 rounded-lg border border-purple-500/30">
                   <p className="text-sm text-gray-300 mb-2">
                     Save these backup codes in a secure place. You can use them to sign in if you lose access to your authentication device.
                   </p>
                   <div className="grid grid-cols-2 gap-2 font-mono text-sm">
-                    <div className="bg-purple-dark p-2 rounded">1234-5678</div>
-                    <div className="bg-purple-dark p-2 rounded">8765-4321</div>
-                    <div className="bg-purple-dark p-2 rounded">9876-5432</div>
-                    <div className="bg-purple-dark p-2 rounded">2345-6789</div>
-                    <div className="bg-purple-dark p-2 rounded">3456-7890</div>
-                    <div className="bg-purple-dark p-2 rounded">4567-8901</div>
+                    <div className="bg-purple-800 p-2 rounded">1234-5678</div>
+                    <div className="bg-purple-800 p-2 rounded">8765-4321</div>
+                    <div className="bg-purple-800 p-2 rounded">9876-5432</div>
+                    <div className="bg-purple-800 p-2 rounded">2345-6789</div>
+                    <div className="bg-purple-800 p-2 rounded">3456-7890</div>
+                    <div className="bg-purple-800 p-2 rounded">4567-8901</div>
                   </div>
                 </div>
               )}
@@ -271,7 +271,7 @@ export default function SecuritySettings() {
               <div className="pt-2">
                 <Button
                   variant="outline" 
-                  className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                  className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                   onClick={() => {
                     setTwoFactor(prev => ({
                       ...prev,
@@ -297,10 +297,10 @@ export default function SecuritySettings() {
       <div>
         <h3 className="text-lg font-medium mb-4">Password Rotation</h3>
         
-        <div className="bg-purple-primary/10 p-4 rounded-lg mb-4">
+        <div className="bg-purple-500/10 p-4 rounded-lg mb-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center">
-              <RefreshCw className="h-5 w-5 text-purple-primary mr-2" />
+              <RefreshCw className="h-5 w-5 text-purple-500 mr-2" />
               <h4 className="font-medium">Password Rotation Policy</h4>
             </div>
             <Switch
@@ -323,7 +323,7 @@ export default function SecuritySettings() {
                   value={passwordRotation.days}
                   onValueChange={(value) => handlePasswordRotationChange('days', value)}
                 >
-                  <SelectTrigger id="rotation-days" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                  <SelectTrigger id="rotation-days" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                     <SelectValue placeholder="Select days" />
                   </SelectTrigger>
                   <SelectContent>
@@ -345,7 +345,7 @@ export default function SecuritySettings() {
                   value={passwordRotation.notifyBeforeDays}
                   onValueChange={(value) => handlePasswordRotationChange('notifyBeforeDays', value)}
                 >
-                  <SelectTrigger id="notify-days" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                  <SelectTrigger id="notify-days" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                     <SelectValue placeholder="Select days" />
                   </SelectTrigger>
                   <SelectContent>
@@ -364,9 +364,9 @@ export default function SecuritySettings() {
       <div>
         <h3 className="text-lg font-medium mb-4">Password Policy</h3>
         
-        <div className="bg-purple-primary/10 p-4 rounded-lg mb-4">
+        <div className="bg-purple-500/10 p-4 rounded-lg mb-4">
           <div className="flex items-center mb-3">
-            <Shield className="h-5 w-5 text-purple-primary mr-2" />
+            <Shield className="h-5 w-5 text-purple-500 mr-2" />
             <h4 className="font-medium">Password Requirements</h4>
           </div>
           
@@ -377,7 +377,7 @@ export default function SecuritySettings() {
                 value={passwordSettings.minimumLength}
                 onValueChange={(value) => handlePasswordSettingChange('minimumLength', value)}
               >
-                <SelectTrigger id="min-length" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="min-length" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select length" />
                 </SelectTrigger>
                 <SelectContent>
@@ -427,7 +427,7 @@ export default function SecuritySettings() {
               </div>
             </div>
             
-            <div className="pt-2 border-t border-purple-primary/20">
+            <div className="pt-2 border-t border-purple-500/20">
               <div className="flex items-center justify-between mt-2">
                 <div>
                   <Label htmlFor="disallow-reuse" className="mb-1 block">Disallow Password Reuse</Label>
@@ -447,7 +447,7 @@ export default function SecuritySettings() {
                     value={passwordSettings.recentPasswordsToCheck}
                     onValueChange={(value) => handlePasswordSettingChange('recentPasswordsToCheck', value)}
                   >
-                    <SelectTrigger id="recent-passwords" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                    <SelectTrigger id="recent-passwords" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                       <SelectValue placeholder="Select count" />
                     </SelectTrigger>
                     <SelectContent>
@@ -465,7 +465,7 @@ export default function SecuritySettings() {
       
       <div className="pt-4 flex justify-end">
         <Button 
-          className="bg-purple-primary hover:bg-purple-accent text-white"
+          className="bg-purple-500 hover:bg-purple-600 text-white"
           onClick={() => {
             toast({
               title: "Security settings saved",

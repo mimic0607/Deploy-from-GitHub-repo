@@ -13,37 +13,37 @@ export default function PasswordSharing() {
         <h2 className="text-xl font-bold mb-4">Secure Sharing Best Practices</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-purple-primary/10 p-4 rounded-lg">
+          <div className="bg-purple-500/10 p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-3">How It Works</h3>
             <ol className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start">
-                <span className="h-6 w-6 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3 flex-shrink-0">1</span>
+                <span className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0">1</span>
                 <span>Choose a credential from your vault to share securely</span>
               </li>
               <li className="flex items-start">
-                <span className="h-6 w-6 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3 flex-shrink-0">2</span>
+                <span className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0">2</span>
                 <span>We encrypt the credential using end-to-end encryption</span>
               </li>
               <li className="flex items-start">
-                <span className="h-6 w-6 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3 flex-shrink-0">3</span>
+                <span className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0">3</span>
                 <span>A secure sharing link is generated for the recipient</span>
               </li>
               <li className="flex items-start">
-                <span className="h-6 w-6 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3 flex-shrink-0">4</span>
+                <span className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0">4</span>
                 <span>Optional access code adds an additional layer of protection</span>
               </li>
               <li className="flex items-start">
-                <span className="h-6 w-6 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3 flex-shrink-0">5</span>
+                <span className="h-6 w-6 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 flex-shrink-0">5</span>
                 <span>The shared credential automatically expires after the set time period</span>
               </li>
             </ol>
           </div>
           
-          <div className="bg-purple-primary/10 p-4 rounded-lg">
+          <div className="bg-purple-500/10 p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-3">Security Measures</h3>
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <span>
@@ -51,7 +51,7 @@ export default function PasswordSharing() {
                 </span>
               </li>
               <li className="flex items-start">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <span>
@@ -59,7 +59,7 @@ export default function PasswordSharing() {
                 </span>
               </li>
               <li className="flex items-start">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <span>
@@ -67,7 +67,7 @@ export default function PasswordSharing() {
                 </span>
               </li>
               <li className="flex items-start">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <span>
@@ -78,12 +78,12 @@ export default function PasswordSharing() {
           </div>
         </div>
         
-        <div className="mt-6 pt-6 border-t border-purple-primary/20">
+        <div className="mt-6 pt-6 border-t border-purple-500/20">
           <h3 className="font-medium mb-3">When to Use Password Sharing</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
             <div>
-              <h4 className="font-medium text-purple-primary mb-2">Recommended Use Cases</h4>
+              <h4 className="font-medium text-purple-500 mb-2">Recommended Use Cases</h4>
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-success mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

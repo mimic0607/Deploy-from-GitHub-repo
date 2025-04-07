@@ -158,7 +158,7 @@ export default function ImportExportSettings() {
         
         <div className="glass-card p-4 rounded-lg">
           <div className="flex items-center mb-3">
-            <Upload className="h-5 w-5 text-purple-primary mr-2" />
+            <Upload className="h-5 w-5 text-purple-500 mr-2" />
             <h4 className="font-medium">Import Credentials</h4>
           </div>
           <p className="text-sm text-gray-300 mb-4">
@@ -172,7 +172,7 @@ export default function ImportExportSettings() {
                 value={importSettings.format}
                 onValueChange={(value) => handleImportSettingChange('format', value)}
               >
-                <SelectTrigger id="import-format" className="bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="import-format" className="bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select format" />
                 </SelectTrigger>
                 <SelectContent>
@@ -191,7 +191,7 @@ export default function ImportExportSettings() {
               <div className="flex items-center space-x-3">
                 <Button
                   variant="outline"
-                  className="bg-purple-dark/50 border border-purple-primary/30 text-white hover:bg-purple-primary/20"
+                  className="bg-purple-800/50 border border-purple-500/30 text-white hover:bg-purple-500/20"
                   onClick={() => document.getElementById('file-upload')?.click()}
                 >
                   <FileUp className="h-4 w-4 mr-2" />
@@ -218,7 +218,7 @@ export default function ImportExportSettings() {
                   type={importSettings.showPassword ? 'text' : 'password'}
                   value={importSettings.password}
                   onChange={(e) => handleImportSettingChange('password', e.target.value)}
-                  className="bg-purple-dark/50 border border-purple-primary/30 pr-10"
+                  className="bg-purple-800/50 border border-purple-500/30 pr-10"
                   placeholder="Enter password if the file is encrypted"
                 />
                 <button
@@ -244,7 +244,7 @@ export default function ImportExportSettings() {
             </div>
             
             <Button
-              className="bg-purple-primary hover:bg-purple-accent text-white"
+              className="bg-purple-500 hover:bg-purple-600 text-white"
               onClick={handleImport}
               disabled={!importSettings.file}
             >
@@ -260,7 +260,7 @@ export default function ImportExportSettings() {
         
         <div className="glass-card p-4 rounded-lg">
           <div className="flex items-center mb-3">
-            <Download className="h-5 w-5 text-purple-primary mr-2" />
+            <Download className="h-5 w-5 text-purple-500 mr-2" />
             <h4 className="font-medium">Export Credentials</h4>
           </div>
           <p className="text-sm text-gray-300 mb-4">
@@ -274,7 +274,7 @@ export default function ImportExportSettings() {
                 value={exportSettings.format}
                 onValueChange={(value) => handleExportSettingChange('format', value)}
               >
-                <SelectTrigger id="export-format" className="bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="export-format" className="bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select format" />
                 </SelectTrigger>
                 <SelectContent>
@@ -307,7 +307,7 @@ export default function ImportExportSettings() {
                     type={exportSettings.showPassword ? 'text' : 'password'}
                     value={exportSettings.password}
                     onChange={(e) => handleExportSettingChange('password', e.target.value)}
-                    className="bg-purple-dark/50 border border-purple-primary/30 pr-10"
+                    className="bg-purple-800/50 border border-purple-500/30 pr-10"
                     placeholder="Create a strong password"
                   />
                   <button
@@ -334,7 +334,7 @@ export default function ImportExportSettings() {
             </div>
             
             <Button
-              className="bg-purple-primary hover:bg-purple-accent text-white"
+              className="bg-purple-500 hover:bg-purple-600 text-white"
               onClick={handleExport}
             >
               <FileDown className="h-4 w-4 mr-2" />
@@ -349,7 +349,7 @@ export default function ImportExportSettings() {
         
         <div className="glass-card p-4 rounded-lg">
           <div className="flex items-center mb-3">
-            <Lock className="h-5 w-5 text-purple-primary mr-2" />
+            <Lock className="h-5 w-5 text-purple-500 mr-2" />
             <h4 className="font-medium">Vault Backup</h4>
           </div>
           <p className="text-sm text-gray-300 mb-4">
@@ -363,7 +363,7 @@ export default function ImportExportSettings() {
                 value={backupSettings.frequency}
                 onValueChange={(value) => handleBackupSettingChange('frequency', value)}
               >
-                <SelectTrigger id="backup-frequency" className="bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="backup-frequency" className="bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select frequency" />
                 </SelectTrigger>
                 <SelectContent>
@@ -397,7 +397,7 @@ export default function ImportExportSettings() {
                     type={backupSettings.showPassword ? 'text' : 'password'}
                     value={backupSettings.password}
                     onChange={(e) => handleBackupSettingChange('password', e.target.value)}
-                    className="bg-purple-dark/50 border border-purple-primary/30 pr-10"
+                    className="bg-purple-800/50 border border-purple-500/30 pr-10"
                     placeholder="Create a strong password"
                   />
                   <button
@@ -417,7 +417,7 @@ export default function ImportExportSettings() {
             
             <div className="flex space-x-3">
               <Button
-                className="bg-purple-primary hover:bg-purple-accent text-white"
+                className="bg-purple-500 hover:bg-purple-600 text-white"
                 onClick={handleCreateBackup}
               >
                 Create Backup Now
@@ -425,7 +425,7 @@ export default function ImportExportSettings() {
               
               <Button
                 variant="outline"
-                className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                 onClick={() => {
                   // Simulate file picker
                   toast({
@@ -438,7 +438,7 @@ export default function ImportExportSettings() {
               </Button>
             </div>
             
-            <div className="bg-purple-primary/10 p-3 rounded-lg text-gray-300 text-sm">
+            <div className="bg-purple-500/10 p-3 rounded-lg text-gray-300 text-sm">
               <h5 className="font-medium mb-1">Recent Backups</h5>
               <ul className="space-y-1">
                 <li className="flex justify-between">
@@ -461,7 +461,7 @@ export default function ImportExportSettings() {
       
       <div className="pt-4 flex justify-end">
         <Button 
-          className="bg-purple-primary hover:bg-purple-accent text-white"
+          className="bg-purple-500 hover:bg-purple-600 text-white"
           onClick={() => {
             toast({
               title: "Settings saved",

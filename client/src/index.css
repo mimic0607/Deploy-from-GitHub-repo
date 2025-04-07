@@ -78,11 +78,57 @@
   }
   
   .glow-effect:hover {
-    @apply shadow-[0_0_15px_rgba(167,109,255,0.7)];
+    @apply shadow-[0_0_15px_rgba(168,85,247,0.7)];
   }
   
   .transition-fade {
     @apply transition-all duration-300 ease-in-out;
+  }
+  
+  .nav-item {
+    @apply relative flex items-center p-3 rounded-lg text-white hover:bg-purple-500/20 transition-all duration-300 mb-1;
+  }
+  
+  .nav-item-active {
+    background: linear-gradient(to right, rgba(168, 85, 247, 0.3), transparent);
+    animation: pulse-border 2s infinite;
+  }
+  
+  .nav-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(0deg, #a855f7, #a855f7);
+    border-radius: 0 4px 4px 0;
+    animation: glow-vertical 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes pulse-border {
+    0% {
+      box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(168, 85, 247, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(168, 85, 247, 0);
+    }
+  }
+  
+  @keyframes glow-vertical {
+    from {
+      box-shadow: 0 0 5px #a855f7, 0 0 10px #a855f7;
+      height: 60%;
+      top: 20%;
+    }
+    to {
+      box-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7;
+      height: 90%;
+      top: 5%;
+    }
   }
 }
 
@@ -96,12 +142,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(167, 109, 255, 0.5);
+  background: rgba(168, 85, 247, 0.5);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(167, 109, 255, 0.8);
+  background: rgba(168, 85, 247, 0.8);
 }
 
 /* Force input text to be dark and visible */
@@ -115,4 +161,48 @@ input, textarea, select, .select-trigger {
 ::placeholder {
   color: rgba(102, 102, 102, 0.7) !important;
   opacity: 1 !important;
+}
+
+/* Page transition animation */
+main {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-fadeSlideUp {
+  animation: fadeSlideUp 0.5s ease-out 0.2s both;
 }

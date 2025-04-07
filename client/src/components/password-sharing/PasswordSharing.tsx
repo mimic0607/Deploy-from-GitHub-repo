@@ -176,11 +176,11 @@ export default function PasswordSharing() {
       <div className="glass-card rounded-2xl p-6 mt-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold flex items-center">
-            <Share2 className="h-6 w-6 text-purple-primary mr-2" />
+            <Share2 className="h-6 w-6 text-purple-500 mr-2" />
             Password Sharing
           </h2>
           <Button
-            className="bg-purple-primary text-white px-4 py-2 rounded-full flex items-center glow-effect hover:bg-purple-accent transition-fade"
+            className="bg-purple-500 text-white px-4 py-2 rounded-full flex items-center glow-effect hover:bg-purple-600 transition-fade"
             onClick={handleOpenShareModal}
           >
             <Share2 className="h-4 w-4 mr-2" />
@@ -193,12 +193,12 @@ export default function PasswordSharing() {
           <h3 className="text-lg font-semibold mb-4">Active Shares</h3>
           
           {sharedPasswords.length === 0 ? (
-            <div className="text-center py-10 bg-purple-primary/5 rounded-xl">
-              <Share2 className="h-12 w-12 mx-auto text-purple-primary/40 mb-3" />
+            <div className="text-center py-10 bg-purple-500/5 rounded-xl">
+              <Share2 className="h-12 w-12 mx-auto text-purple-500/40 mb-3" />
               <p className="text-gray-400">You haven't shared any passwords yet.</p>
               <Button 
                 variant="link" 
-                className="text-purple-primary mt-2"
+                className="text-purple-500 mt-2"
                 onClick={handleOpenShareModal}
               >
                 Share your first password
@@ -219,7 +219,7 @@ export default function PasswordSharing() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 rounded-full bg-purple-dark flex items-center justify-center text-purple-primary border border-purple-primary/30">
+                        <div className="h-10 w-10 rounded-full bg-purple-800 flex items-center justify-center text-purple-500 border border-purple-500/30">
                           <Share2 className="h-5 w-5" />
                         </div>
                         <div className="ml-3">
@@ -260,26 +260,26 @@ export default function PasswordSharing() {
         </div>
         
         {/* Information Section */}
-        <div className="bg-purple-primary/10 p-5 rounded-xl">
+        <div className="bg-purple-500/10 p-5 rounded-xl">
           <h3 className="text-lg font-semibold mb-3">Secure Password Sharing</h3>
           <p className="text-sm text-gray-300 mb-3">
             Our password sharing feature uses end-to-end encryption to ensure your credentials remain secure.
           </p>
           <ul className="text-sm space-y-2 text-gray-300">
             <li className="flex items-start">
-              <span className="h-5 w-5 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-2 mt-0.5">1</span>
+              <span className="h-5 w-5 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-2 mt-0.5">1</span>
               <span>Choose a credential and recipient email</span>
             </li>
             <li className="flex items-start">
-              <span className="h-5 w-5 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-2 mt-0.5">2</span>
+              <span className="h-5 w-5 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-2 mt-0.5">2</span>
               <span>Set an expiration time for time-limited access</span>
             </li>
             <li className="flex items-start">
-              <span className="h-5 w-5 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-2 mt-0.5">3</span>
+              <span className="h-5 w-5 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-2 mt-0.5">3</span>
               <span>Use an access code for an additional layer of security</span>
             </li>
             <li className="flex items-start">
-              <span className="h-5 w-5 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-2 mt-0.5">4</span>
+              <span className="h-5 w-5 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-2 mt-0.5">4</span>
               <span>Share the link and access code separately for maximum security</span>
             </li>
           </ul>
@@ -300,7 +300,7 @@ export default function PasswordSharing() {
               <div>
                 <Label className="block text-sm font-medium mb-1">Select Credential</Label>
                 <Select value={selectedVaultItem} onValueChange={setSelectedVaultItem}>
-                  <SelectTrigger className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                  <SelectTrigger className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                     <SelectValue placeholder="Choose a credential to share" />
                   </SelectTrigger>
                   <SelectContent>
@@ -320,7 +320,7 @@ export default function PasswordSharing() {
                   placeholder="recipient@example.com"
                   value={recipientEmail}
                   onChange={(e) => setRecipientEmail(e.target.value)}
-                  className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                  className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
                 />
               </div>
               
@@ -339,7 +339,7 @@ export default function PasswordSharing() {
                 <div>
                   <Label className="block text-sm font-medium mb-1">Expires After</Label>
                   <Select value={expiryHours} onValueChange={setExpiryHours}>
-                    <SelectTrigger className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                    <SelectTrigger className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                       <SelectValue placeholder="Select expiration time" />
                     </SelectTrigger>
                     <SelectContent>
@@ -374,11 +374,11 @@ export default function PasswordSharing() {
                       value={accessCode}
                       onChange={(e) => setAccessCode(e.target.value)}
                       disabled={generateRandomCode}
-                      className="flex-1 bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                      className="flex-1 bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
                     />
                     <Button
                       variant="outline"
-                      className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                      className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                       onClick={handleGenerateAccessCode}
                     >
                       Generate
@@ -400,13 +400,13 @@ export default function PasswordSharing() {
               <div className="flex space-x-3 mt-4">
                 <Button
                   variant="outline"
-                  className="flex-1 border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                  className="flex-1 border-purple-500 text-purple-500 hover:bg-purple-500/10"
                   onClick={() => setIsShareModalOpen(false)}
                 >
                   Cancel
                 </Button>
                 <Button
-                  className="flex-1 bg-purple-primary hover:bg-purple-accent text-white"
+                  className="flex-1 bg-purple-500 hover:bg-purple-600 text-white"
                   onClick={handleShare}
                   disabled={isSharing}
                 >
@@ -435,7 +435,7 @@ export default function PasswordSharing() {
                         type="text"
                         value={shareData.link}
                         readOnly
-                        className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 pr-10 pl-3 focus:outline-none"
+                        className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 pr-10 pl-3 focus:outline-none"
                       />
                       <button
                         type="button"
@@ -458,7 +458,7 @@ export default function PasswordSharing() {
                           type="text"
                           value={shareData.accessCode}
                           readOnly
-                          className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 pr-10 pl-3 focus:outline-none"
+                          className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 pr-10 pl-3 focus:outline-none"
                         />
                         <button
                           type="button"
@@ -468,14 +468,14 @@ export default function PasswordSharing() {
                           <Copy className="h-4 w-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-purple-primary mt-1 flex items-center">
+                      <p className="text-xs text-purple-500 mt-1 flex items-center">
                         <Key className="h-3 w-3 mr-1" />
                         Share this code separately for better security
                       </p>
                     </div>
                   )}
                   
-                  <div className="bg-purple-primary/10 p-3 rounded-lg">
+                  <div className="bg-purple-500/10 p-3 rounded-lg">
                     <p className="text-xs text-gray-300">
                       For maximum security, share the link and access code through different channels 
                       (e.g., email the link and text the access code).
@@ -487,13 +487,13 @@ export default function PasswordSharing() {
               <div className="flex space-x-3 mt-2">
                 <Button
                   variant="outline"
-                  className="flex-1 border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                  className="flex-1 border-purple-500 text-purple-500 hover:bg-purple-500/10"
                   onClick={() => setIsShareModalOpen(false)}
                 >
                   Close
                 </Button>
                 <Button
-                  className="flex-1 bg-purple-primary hover:bg-purple-accent text-white"
+                  className="flex-1 bg-purple-500 hover:bg-purple-600 text-white"
                   onClick={handleOpenShareModal}
                 >
                   Share Another

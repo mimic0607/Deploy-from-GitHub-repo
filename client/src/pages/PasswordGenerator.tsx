@@ -16,7 +16,7 @@ export default function PasswordGeneratorPage() {
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-purple-primary/10 p-4 rounded-lg">
+            <div className="bg-purple-500/10 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Password Entropy</h3>
               <p className="text-sm text-gray-300 mb-2">
                 Entropy measures randomness and unpredictability, which determines how resistant a password is to brute force attacks.
@@ -45,11 +45,11 @@ export default function PasswordGeneratorPage() {
               </ul>
             </div>
             
-            <div className="bg-purple-primary/10 p-4 rounded-lg">
+            <div className="bg-purple-500/10 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Customization Options</h3>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" />
                     <path d="M12 16v-4" />
                     <path d="M12 8h.01" />
@@ -57,7 +57,7 @@ export default function PasswordGeneratorPage() {
                   Password length (longer is stronger)
                 </li>
                 <li className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" />
                     <path d="M12 16v-4" />
                     <path d="M12 8h.01" />
@@ -65,7 +65,7 @@ export default function PasswordGeneratorPage() {
                   Character types (uppercase, lowercase, numbers, symbols)
                 </li>
                 <li className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-primary mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-500 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z" />
                     <path d="M12 16v-4" />
                     <path d="M12 8h.01" />
@@ -86,7 +86,7 @@ export default function PasswordGeneratorPage() {
           
           <div className="space-y-4">
             <div className="flex items-start">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3">
+              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
@@ -102,7 +102,7 @@ export default function PasswordGeneratorPage() {
             </div>
             
             <div className="flex items-start">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3">
+              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
@@ -117,7 +117,7 @@ export default function PasswordGeneratorPage() {
             </div>
             
             <div className="flex items-start">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3">
+              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
@@ -132,7 +132,7 @@ export default function PasswordGeneratorPage() {
             </div>
             
             <div className="flex items-start">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-primary/20 flex items-center justify-center text-purple-primary mr-3">
+              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />

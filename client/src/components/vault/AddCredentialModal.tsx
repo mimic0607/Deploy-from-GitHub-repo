@@ -193,7 +193,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               value={formData.name}
               onChange={handleChange}
               placeholder="e.g., Google, Netflix, Bank of America"
-              className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               required
             />
           </div>
@@ -206,7 +206,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               value={formData.url}
               onChange={handleChange}
               placeholder="https://example.com"
-              className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
             />
           </div>
           
@@ -218,7 +218,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               value={formData.username}
               onChange={handleChange}
               placeholder="your.email@example.com"
-              className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               required
             />
           </div>
@@ -233,7 +233,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter password"
-                className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-20 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 pr-20 focus:outline-none focus:border-purple-500 transition-fade"
                 required
               />
               <div className="absolute right-3 top-2 flex space-x-2">
@@ -264,7 +264,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               value={formData.category} 
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+              <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent className="bg-white text-gray-800">
@@ -286,7 +286,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               onChange={handleChange}
               placeholder="Additional information"
               rows={3}
-              className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
             />
           </div>
           
@@ -295,7 +295,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               id="password-expiry" 
               checked={formData.setPasswordExpiry}
               onCheckedChange={handleCheckboxChange}
-              className="rounded text-purple-primary focus:ring-purple-primary focus:ring-offset-purple-dark" 
+              className="rounded text-purple-500 focus:ring-purple-primary focus:ring-offset-purple-dark" 
             />
             <Label 
               htmlFor="password-expiry" 
@@ -314,7 +314,7 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
                 type="date"
                 value={formData.expiryDate}
                 onChange={handleChange}
-                className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-500 transition-fade"
               />
             </div>
           )}
@@ -323,14 +323,14 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
             <Button
               type="button"
               variant="outline"
-              className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-full font-medium transition-fade"
+              className="flex-1 bg-transparent border border-purple-500 text-purple-500 hover:bg-purple-500/10 py-2 rounded-full font-medium transition-fade"
               onClick={onClose}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-full font-medium transition-fade glow-effect"
+              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-full font-medium transition-fade glow-effect"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Saving...' : (editItem ? 'Update Credential' : 'Save Credential')}

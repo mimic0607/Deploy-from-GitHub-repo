@@ -77,8 +77,8 @@ export default function PasswordGenerator() {
   return (
     <div className="glass-card rounded-2xl p-6">
       <div className="text-center mb-4">
-        <div className="inline-block rounded-full h-16 w-16 flex items-center justify-center bg-purple-primary/20 mb-3">
-          <Key className="h-8 w-8 text-purple-primary" />
+        <div className="inline-block rounded-full h-16 w-16 flex items-center justify-center bg-purple-500/20 mb-3">
+          <Key className="h-8 w-8 text-purple-500" />
         </div>
         <h2 className="text-xl font-bold">Password Generator</h2>
       </div>
@@ -87,7 +87,7 @@ export default function PasswordGenerator() {
         <input 
           type="text" 
           value={password.password}
-          className="w-full bg-purple-dark/50 font-mono text-lg text-center border border-purple-primary/30 rounded-lg py-3 px-4 focus:outline-none focus:border-purple-primary transition-fade"
+          className="w-full bg-purple-800/50 font-mono text-lg text-center border border-purple-500/30 rounded-lg py-3 px-4 focus:outline-none focus:border-purple-500 transition-fade"
           readOnly 
         />
         <button 
@@ -102,7 +102,7 @@ export default function PasswordGenerator() {
       <div className="mb-4">
         <div className="flex justify-between mb-2">
           <Label className="text-sm font-medium">Password Length</Label>
-          <span className="text-sm text-purple-primary">{options.length}</span>
+          <span className="text-sm text-purple-500">{options.length}</span>
         </div>
         <Slider 
           value={[options.length]} 
@@ -110,7 +110,7 @@ export default function PasswordGenerator() {
           max={32} 
           step={1}
           onValueChange={(value) => handleOptionChange('length', value[0])}
-          className="w-full accent-purple-primary cursor-pointer"
+          className="w-full cursor-pointer"
         />
       </div>
       
@@ -157,7 +157,7 @@ export default function PasswordGenerator() {
         </div>
       </div>
       
-      <div className="flex items-center justify-between mb-4 bg-purple-primary/10 p-3 rounded-lg">
+      <div className="flex items-center justify-between mb-4 bg-purple-500/10 p-3 rounded-lg">
         <div>
           <span className="block text-sm font-medium">Password Strength</span>
           <div className="flex items-center mt-1">
@@ -171,16 +171,16 @@ export default function PasswordGenerator() {
         </div>
         <div>
           <span className="block text-sm font-medium">Entropy</span>
-          <div className="text-purple-primary font-semibold">{password.entropy} bits</div>
+          <div className="text-purple-500 font-semibold">{password.entropy} bits</div>
         </div>
         <div>
           <span className="block text-sm font-medium">Crack Time</span>
-          <div className="text-purple-primary font-semibold">{password.crackTime}</div>
+          <div className="text-purple-500 font-semibold">{password.crackTime}</div>
         </div>
       </div>
       
       <Button
-        className="w-full bg-purple-primary hover:bg-purple-accent text-white py-6 rounded-full font-medium transition-fade glow-effect"
+        className="w-full bg-purple-500 hover:bg-purple-600 text-white py-6 rounded-full font-medium transition-fade glow-effect"
         onClick={handleGeneratePassword}
         disabled={isGenerating}
       >

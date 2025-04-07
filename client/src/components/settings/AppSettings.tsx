@@ -54,7 +54,7 @@ export default function AppSettings() {
                 value={theme}
                 onValueChange={(value: 'light' | 'dark' | 'system') => setTheme(value)}
               >
-                <SelectTrigger className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select theme" />
                 </SelectTrigger>
                 <SelectContent>
@@ -108,7 +108,7 @@ export default function AppSettings() {
                 value={settings.autoLogoutTime}
                 onValueChange={(value) => handleSettingChange('autoLogoutTime', value)}
               >
-                <SelectTrigger id="auto-logout-time" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="auto-logout-time" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select timeout" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +142,7 @@ export default function AppSettings() {
                 value={settings.clearClipboardTime}
                 onValueChange={(value) => handleSettingChange('clearClipboardTime', value)}
               >
-                <SelectTrigger id="clear-clipboard-time" className="w-[180px] bg-purple-dark/50 border border-purple-primary/30">
+                <SelectTrigger id="clear-clipboard-time" className="w-[180px] bg-purple-800/50 border border-purple-500/30">
                   <SelectValue placeholder="Select timeout" />
                 </SelectTrigger>
                 <SelectContent>
@@ -208,7 +208,7 @@ export default function AppSettings() {
       <div className="pt-4 flex justify-between">
         <Button 
           variant="outline" 
-          className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+          className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
           onClick={() => {
             setSettings({
               autoLogout: true,
@@ -230,7 +230,7 @@ export default function AppSettings() {
         </Button>
         
         <Button 
-          className="bg-purple-primary hover:bg-purple-accent text-white"
+          className="bg-purple-500 hover:bg-purple-600 text-white"
           onClick={() => {
             toast({
               title: "Settings saved",

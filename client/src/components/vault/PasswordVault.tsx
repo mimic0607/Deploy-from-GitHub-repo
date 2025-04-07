@@ -127,11 +127,11 @@ export default function PasswordVault() {
       <div className="glass-card rounded-2xl p-6 mb-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold flex items-center">
-            <Vault className="h-6 w-6 text-purple-primary mr-2" />
+            <Vault className="h-6 w-6 text-purple-500 mr-2" />
             Password Vault
           </h2>
           <Button
-            className="bg-purple-primary text-white px-4 py-2 rounded-full flex items-center glow-effect hover:bg-purple-accent transition-fade"
+            className="bg-purple-500 text-white px-4 py-2 rounded-full flex items-center glow-effect hover:bg-purple-600 transition-fade"
             onClick={() => {
               setEditingItem(null);
               setIsAddModalOpen(true);
@@ -150,13 +150,13 @@ export default function PasswordVault() {
               placeholder="Search vault..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:border-purple-primary transition-fade" 
+              className="w-full bg-purple-800/50 border border-purple-500/30 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:border-purple-500 transition-fade" 
             />
             <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
           </div>
           <div className="flex space-x-4">
             <select 
-              className="bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-4 focus:outline-none focus:border-purple-primary transition-fade"
+              className="bg-white text-gray-800 border border-purple-500/30 rounded-lg py-2 px-4 focus:outline-none focus:border-purple-500 transition-fade"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
@@ -170,7 +170,7 @@ export default function PasswordVault() {
         {/* Loading State */}
         {isLoadingVaultItems && (
           <div className="text-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-primary mx-auto"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mx-auto"></div>
             <p className="mt-4 text-gray-400">Loading your vault...</p>
           </div>
         )}
@@ -188,7 +188,7 @@ export default function PasswordVault() {
             {searchTerm || selectedCategory !== 'All Categories' ? (
               <Button 
                 variant="outline"
-                className="border-purple-primary text-purple-primary hover:bg-purple-primary/10"
+                className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedCategory('All Categories');
@@ -198,7 +198,7 @@ export default function PasswordVault() {
               </Button>
             ) : (
               <Button
-                className="bg-purple-primary text-white hover:bg-purple-accent"
+                className="bg-purple-500 text-white hover:bg-purple-600"
                 onClick={() => {
                   setEditingItem(null);
                   setIsAddModalOpen(true);
@@ -214,9 +214,9 @@ export default function PasswordVault() {
         {!isLoadingVaultItems && filteredItems.length > 0 && (
           <div className="space-y-4">
             {currentItems.map(item => (
-              <div key={item.id} className="glass-card rounded-xl p-4 hover:bg-purple-primary/10 transition-fade glow-effect cursor-pointer">
+              <div key={item.id} className="glass-card rounded-xl p-4 hover:bg-purple-500/10 transition-fade glow-effect cursor-pointer">
                 <div className="flex items-center">
-                  <div className="h-12 w-12 rounded-full bg-purple-dark flex items-center justify-center text-purple-primary border border-purple-primary/30">
+                  <div className="h-12 w-12 rounded-full bg-purple-800 flex items-center justify-center text-purple-500 border border-purple-500/30">
                     {getIcon(item.name)}
                   </div>
                   <div className="ml-4 flex-grow">
@@ -225,7 +225,7 @@ export default function PasswordVault() {
                   </div>
                   <div className="flex space-x-2">
                     <button 
-                      className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-purple-primary/20 transition-fade" 
+                      className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-purple-500/20 transition-fade" 
                       title="Copy Password"
                       onClick={() => handleCopyPassword(item.id, item.password)}
                     >
@@ -235,14 +235,14 @@ export default function PasswordVault() {
                       }
                     </button>
                     <button 
-                      className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-purple-primary/20 transition-fade" 
+                      className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-purple-500/20 transition-fade" 
                       title="Edit"
                       onClick={() => handleEdit(item)}
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button 
-                      className="text-gray-400 hover:text-danger p-2 rounded-full hover:bg-purple-primary/20 transition-fade" 
+                      className="text-gray-400 hover:text-danger p-2 rounded-full hover:bg-purple-500/20 transition-fade" 
                       title="Delete"
                       onClick={() => handleDelete(item.id)}
                     >
@@ -253,7 +253,7 @@ export default function PasswordVault() {
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center">
                     {item.category && (
-                      <span className="text-xs bg-purple-primary/20 text-purple-primary px-2 py-1 rounded-full mr-2">
+                      <span className="text-xs bg-purple-500/20 text-purple-500 px-2 py-1 rounded-full mr-2">
                         {item.category}
                       </span>
                     )}
@@ -283,7 +283,7 @@ export default function PasswordVault() {
               <Button
                 variant="outline"
                 size="sm"
-                className="px-3 py-1 rounded-md bg-purple-dark/50 border border-purple-primary/30 hover:bg-purple-primary/20 transition-fade"
+                className="px-3 py-1 rounded-md bg-purple-800/50 border border-purple-500/30 hover:bg-purple-500/20 transition-fade"
                 onClick={() => setPage(prev => Math.max(prev - 1, 1))}
                 disabled={page === 1}
               >
@@ -298,8 +298,8 @@ export default function PasswordVault() {
                     variant={pageNumber === page ? "default" : "outline"}
                     size="sm"
                     className={pageNumber === page 
-                      ? "px-3 py-1 rounded-md bg-purple-primary text-white hover:bg-purple-accent transition-fade"
-                      : "px-3 py-1 rounded-md bg-purple-dark/50 border border-purple-primary/30 hover:bg-purple-primary/20 transition-fade"
+                      ? "px-3 py-1 rounded-md bg-purple-500 text-white hover:bg-purple-600 transition-fade"
+                      : "px-3 py-1 rounded-md bg-purple-800/50 border border-purple-500/30 hover:bg-purple-500/20 transition-fade"
                     }
                     onClick={() => setPage(pageNumber)}
                   >
@@ -311,7 +311,7 @@ export default function PasswordVault() {
               <Button
                 variant="outline"
                 size="sm"
-                className="px-3 py-1 rounded-md bg-purple-dark/50 border border-purple-primary/30 hover:bg-purple-primary/20 transition-fade"
+                className="px-3 py-1 rounded-md bg-purple-800/50 border border-purple-500/30 hover:bg-purple-500/20 transition-fade"
                 onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={page === totalPages}
               >
