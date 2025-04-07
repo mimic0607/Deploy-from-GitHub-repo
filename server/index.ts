@@ -8,11 +8,17 @@ import { setupTestData } from "./setup-test-data";
 import fs from "fs";
 import path from "path";
 import https from "https";
+import { fileURLToPath } from "url";
+
+// ES Module __dirname workaround
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Logging middleware for /api routes
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -31,11 +37,9 @@ app.use((req, res, next) => {
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
       }
-
       log(logLine);
     }
   });
@@ -44,56 +48,54 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Set up test data for password expiry notifications
+  // Setup test data (e.g. password expiry notifications)
   await setupTestData();
-  
+
+  // Register application routes and get the server instance
   const server = await registerRoutes(app);
 
+  // Global error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Set up Vite in development, serve static in production
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    serveStatic(app, __dirname);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = process.env.PORT || 5000;
-  
-  // Tell Express that the app is behind a proxy (Replit or other deployment)
-  app.set('trust proxy', 1);
-  
-  // Redirect HTTP to HTTPS in production
+
+  // Behind proxy config (e.g. Replit, Vercel, etc.)
+  app.set("trust proxy", 1);
+
+  // Redirect HTTP to HTTPS (only in production)
   app.use((req, res, next) => {
-    // Check for secure connection via proxy headers
     if (
-      !req.secure && 
-      req.get('x-forwarded-proto') !== 'https' && 
-      process.env.NODE_ENV === 'production'
+      !req.secure &&
+      req.get("x-forwarded-proto") !== "https" &&
+      process.env.NODE_ENV === "production"
     ) {
-      return res.redirect(`https://${req.get('host')}${req.url}`);
+      return res.redirect(`https://${req.get("host")}${req.url}`);
     }
     next();
   });
-  
-  // Start the server
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-    log(`HTTPS redirect is ${process.env.NODE_ENV === 'production' ? 'enabled' : 'disabled'}`);
-  });
+
+  // Start the server on port 5000
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => {
+      log(`serving on port ${port}`);
+      log(`HTTPS redirect is ${process.env.NODE_ENV === "production" ? "enabled" : "disabled"}`);
+    }
+  );
 })();
