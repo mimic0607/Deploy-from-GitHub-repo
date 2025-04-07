@@ -17,7 +17,7 @@ export class NotificationService {
     user: User, 
     daysWarning: number = 7,
     sendEmail: boolean = false
-  ): Promise<{ expiringCount: number, expiredCount: number, emailSent: boolean }> {
+  ): Promise<{ expiringCount: number, expiredCount: number, emailSent: boolean, notificationSent: boolean }> {
     try {
       // Get the user's vault items
       const vaultItems = await storage.getVaultItems(user.id);
@@ -38,10 +38,36 @@ export class NotificationService {
         emailSent = await this.sendEmail(user.email, emailContent);
       }
       
+      // Send real-time notification via WebSockets
+      let notificationSent = false;
+      if (global.broadcastNotification && (expiringItems.length > 0 || expiredItems.length > 0)) {
+        // Create a notification for WebSocket
+        const notification = {
+          title: `Password Security Alert`,
+          message: expiringItems.length > 0 
+            ? `You have ${expiringItems.length} password(s) expiring soon.`
+            : `You have ${expiredItems.length} expired password(s).`,
+          severity: expiredItems.length > 0 ? 'error' : 'warning',
+          data: {
+            expiringCount: expiringItems.length,
+            expiredCount: expiredItems.length,
+            items: [
+              ...expiredItems.map(item => ({ ...item, status: 'expired' })),
+              ...expiringItems.map(item => ({ ...item, status: 'expiring' }))
+            ].slice(0, 5) // Send first 5 items only to avoid large payloads
+          }
+        };
+        
+        // Send to specific user
+        global.broadcastNotification(notification, user.id);
+        notificationSent = true;
+      }
+      
       return {
         expiringCount: expiringItems.length,
         expiredCount: expiredItems.length,
-        emailSent
+        emailSent,
+        notificationSent
       };
     } catch (error) {
       console.error('Error in notifyExpiringPasswords:', error);

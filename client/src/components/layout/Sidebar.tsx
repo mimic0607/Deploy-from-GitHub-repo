@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { useData } from '@/lib/dataContext';
+import { useAuth } from '@/hooks/use-auth';
+import { NotificationCenter } from '@/components/ui/notifications';
 import {
   Shield,
   ChartPie,
@@ -24,6 +26,7 @@ interface NavItem {
 export default function Sidebar() {
   const [location] = useLocation();
   const { currentUser } = useData();
+  const { logoutMutation } = useAuth();
   
   const navItems: NavItem[] = [
     {
@@ -65,11 +68,15 @@ export default function Sidebar() {
 
   return (
     <div className="glass-card w-full md:w-64 flex-shrink-0 border-r border-purple-500/20 overflow-y-auto md:h-screen h-auto">
-      <div className="p-4 flex items-center justify-center md:justify-start border-b border-purple-500/20">
-        <div className="h-10 w-10 flex items-center justify-center rounded-full bg-purple-500 text-white mr-2">
-          <Shield className="h-5 w-5" />
+      <div className="p-4 flex items-center justify-between border-b border-purple-500/20">
+        <div className="flex items-center">
+          <div className="h-10 w-10 flex items-center justify-center rounded-full bg-purple-500 text-white mr-2">
+            <Shield className="h-5 w-5" />
+          </div>
+          <h1 className="text-xl font-bold text-white">SecurePass</h1>
         </div>
-        <h1 className="text-xl font-bold text-white">SecurePass</h1>
+        
+        <NotificationCenter />
       </div>
       
       <div className="p-2">
@@ -119,7 +126,11 @@ export default function Sidebar() {
             <div className="text-sm font-medium">{currentUser?.username || 'Guest'}</div>
             <div className="text-xs text-gray-400">{currentUser?.email || 'guest@example.com'}</div>
           </div>
-          <button className="ml-auto text-gray-400 hover:text-white transition-fade">
+          <button 
+            onClick={() => logoutMutation.mutate()}
+            className="ml-auto text-gray-400 hover:text-white transition-fade"
+            disabled={logoutMutation.isPending}
+          >
             <LogOut className="h-4 w-4" />
           </button>
         </div>

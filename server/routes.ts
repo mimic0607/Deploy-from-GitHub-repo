@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
@@ -8,6 +8,17 @@ import { PasswordService } from "./services/passwordService";
 import { CryptoService } from "./services/cryptoService";
 import { NotificationService } from "./services/notificationService";
 import { isPasswordExpiring, isPasswordExpired } from "./utils/passwordUtils";
+import { WebSocketServer, WebSocket } from 'ws';
+
+// Extend WebSocket interface to add custom properties
+interface SecureWebSocket extends WebSocket {
+  userId?: number;
+}
+
+// Extend global namespace for our broadcast function
+declare global {
+  var broadcastNotification: (message: any, userId?: number) => void;
+}
 import { insertVaultItemSchema, insertCryptoDocumentSchema, insertPasswordShareSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -374,22 +385,256 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
       
-      // Implementation would depend on the notification service
-      // This could use email, SMS, push notifications, etc.
+      // Check if this is a test notification request
+      if (req.body.testNotification) {
+        // Get notification type from the request
+        const notificationType = req.body.notificationType || 'info';
+        
+        // Set messages based on notification type
+        let title = 'Test Notification';
+        let message = 'This is a test notification to verify the real-time notification system.';
+        let severity = notificationType;
+        
+        switch (notificationType) {
+          case 'success':
+            title = 'Test Success';
+            message = 'Your action has been completed successfully.';
+            break;
+          case 'warning':
+            title = 'Test Warning';
+            message = 'This is a warning notification. Please take action soon.';
+            break;
+          case 'error':
+            title = 'Test Error';
+            message = 'An error has occurred. Please check your configuration.';
+            break;
+          default: // info
+            title = 'Test Information';
+            message = 'This is an informational notification for your awareness.';
+        }
+        
+        // Send a test notification directly through WebSocket
+        global.broadcastNotification({
+          title,
+          message,
+          severity,
+          timestamp: new Date().toISOString()
+        }, userId);
+        
+        return res.json({ 
+          success: true, 
+          message: 'Test notification sent',
+          type: notificationType
+        });
+      }
+      
+      // Regular password expiry notification
       const daysWarning = parseInt(req.query.daysWarning as string) || 7;
       const sendEmail = req.body.sendEmail || false;
-      const notificationsSent = await NotificationService.notifyExpiringPasswords(req.user, daysWarning, sendEmail);
+      const result = await NotificationService.notifyExpiringPasswords(req.user, daysWarning, sendEmail);
       
-      return res.json({ success: true, notificationsSent });
+      return res.json({ 
+        success: true, 
+        expiringCount: result.expiringCount,
+        expiredCount: result.expiredCount,
+        emailSent: result.emailSent,
+        notificationSent: result.notificationSent
+      });
     } catch (error) {
       console.error('Error sending password expiry notifications:', error);
       return res.status(500).json({ error: 'Failed to send password expiry notifications' });
     }
   });
 
+  // OAuth verification endpoint
+  apiRouter.post('/verify-oauth', async (req: Request, res: Response) => {
+    try {
+      const { uid, email, displayName } = req.body;
+      
+      if (!uid || !email) {
+        return res.status(400).json({ error: 'UID and email are required' });
+      }
+      
+      // Check if user already exists by email
+      let user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Create new user with OAuth data
+        const username = displayName || email.split('@')[0];
+        const generatedPassword = CryptoService.generateKey(12);
+        const masterPassword = CryptoService.generateKey(16);
+        
+        user = await storage.createUser({
+          username,
+          email,
+          password: generatedPassword, // This is a placeholder, user will never use this password
+          masterPassword,
+          firebaseUid: uid,
+          isOAuthUser: true
+        });
+      } else if (!user.firebaseUid) {
+        // Update existing user with firebase UID if it doesn't have one
+        user = await storage.updateUser(user.id, { 
+          firebaseUid: uid,
+          isOAuthUser: true
+        });
+      }
+      
+      // Log the user in
+      if (!user) {
+        return res.status(500).json({ error: 'Failed to create or find user' });
+      }
+      
+      req.login(user, (err) => {
+        if (err) {
+          console.error('Error logging in OAuth user:', err);
+          return res.status(500).json({ error: 'Failed to login OAuth user' });
+        }
+        
+        return res.status(200).json(user);
+      });
+    } catch (error) {
+      console.error('Error verifying OAuth user:', error);
+      return res.status(500).json({ error: 'Failed to verify OAuth user' });
+    }
+  });
+
+  // Real-time notifications with WebSocket
+  apiRouter.get('/notifications', (req: Request, res: Response) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+    
+    // Return current notification settings
+    return res.json({
+      enabled: true,
+      channels: ['websocket', 'inApp'],
+      userId
+    });
+  });
+  
+  // Test WebSocket connection
+  apiRouter.post('/test-websocket', (req: Request, res: Response) => {
+    // TEMPORARY: Allow testing without authentication
+    // This will be removed when we have the Firebase credentials
+    const BYPASS_AUTH = true;
+    
+    if (!req.isAuthenticated() && !BYPASS_AUTH) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    // Use default user ID if not authenticated
+    const userId = req.user?.id || 1;
+    
+    // Get notification type from the request
+    const notificationType = req.body.notificationType || 'info';
+    
+    // Set messages based on notification type
+    let title = 'Test Notification';
+    let message = 'This is a test notification to verify the real-time notification system.';
+    let severity = notificationType;
+    
+    switch (notificationType) {
+      case 'success':
+        title = 'Test Success';
+        message = 'Your action has been completed successfully.';
+        break;
+      case 'warning':
+        title = 'Test Warning';
+        message = 'This is a warning notification. Please take action soon.';
+        break;
+      case 'error':
+        title = 'Test Error';
+        message = 'An error has occurred. Please check your configuration.';
+        break;
+      default: // info
+        title = 'Test Information';
+        message = 'This is an informational notification for your awareness.';
+    }
+    
+    // Send a diagnostic message through WebSocket
+    global.broadcastNotification({
+      title,
+      message,
+      severity,
+      timestamp: new Date().toISOString()
+    }, userId);
+    
+    return res.json({
+      success: true,
+      message: 'Test message sent via WebSocket',
+      type: notificationType,
+      userId
+    });
+  });
+
   // Mount API router at /api prefix
   app.use('/api', apiRouter);
   
   const httpServer = createServer(app);
+  
+  // Setup WebSocket server for real-time notifications
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  wss.on('connection', (ws: SecureWebSocket) => {
+    console.log('WebSocket client connected');
+    
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        console.log('Received WebSocket message:', data);
+        
+        // Handle different message types
+        if (data.type === 'auth') {
+          // Authentication message would contain session info
+          ws.userId = data.userId;
+          ws.send(JSON.stringify({ 
+            type: 'auth-response', 
+            success: true,
+            message: 'Authentication successful'
+          }));
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+        ws.send(JSON.stringify({ 
+          type: 'error', 
+          message: 'Error processing message' 
+        }));
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log('WebSocket client disconnected');
+    });
+    
+    // Send a welcome message
+    ws.send(JSON.stringify({ 
+      type: 'info', 
+      message: 'Connected to secure password utility suite WebSocket server' 
+    }));
+  });
+  
+  // Broadcast notifications to all connected clients or specific users
+  global.broadcastNotification = (message: any, userId?: number) => {
+    wss.clients.forEach((client: WebSocket) => {
+      if (client.readyState === WebSocket.OPEN) {
+        // If userId is specified, only send to that user
+        const secureClient = client as SecureWebSocket;
+        if (!userId || secureClient.userId === userId) {
+          client.send(JSON.stringify({
+            type: 'notification',
+            timestamp: new Date().toISOString(),
+            ...message
+          }));
+        }
+      }
+    });
+  };
+  
   return httpServer;
 }

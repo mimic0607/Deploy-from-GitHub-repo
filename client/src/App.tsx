@@ -13,6 +13,10 @@ import CryptoTools from "@/pages/CryptoTools";
 import PasswordSharing from "@/pages/PasswordSharing";
 import Settings from "@/pages/Settings";
 import AuthPage from "@/pages/auth-page";
+import { useEffect } from "react";
+import { handleRedirectResult } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
+import { WebSocketProvider } from "@/lib/websocket";
 
 function Router() {
   return (
@@ -31,12 +35,48 @@ function Router() {
   );
 }
 
+function AppContent() {
+  const { toast } = useToast();
+  
+  // Temporarily disabled Firebase redirect handling
+  // We'll remove the comment when we have Firebase credentials
+  /*
+  useEffect(() => {
+    // Process Firebase redirect result
+    async function processRedirect() {
+      try {
+        const user = await handleRedirectResult();
+        if (user) {
+          toast({
+            title: "Authentication successful",
+            description: `Welcome, ${user.displayName || user.email}!`,
+          });
+        }
+      } catch (error) {
+        console.error("Error processing redirect:", error);
+        toast({
+          title: "Authentication failed",
+          description: "Could not authenticate with Google. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+    
+    processRedirect();
+  }, [toast]);
+  */
+  
+  return <Router />;
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router />
-        <Toaster />
+        <WebSocketProvider>
+          <AppContent />
+          <Toaster />
+        </WebSocketProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

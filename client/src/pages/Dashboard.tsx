@@ -1,13 +1,155 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import PasswordHealth from '@/components/dashboard/PasswordHealth';
+import TestNotifications from '@/components/dashboard/TestNotifications';
 import { Link } from 'wouter';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Clock, AlertTriangle, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks/use-auth';
+import { useWebSocket } from '@/lib/websocket';
+import { queryClient } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Dashboard() {
+  const [expiringPasswords, setExpiringPasswords] = useState({
+    loading: false,
+    expiringCount: 0,
+    expiredCount: 0,
+    items: []
+  });
+  const { user } = useAuth();
+  const { connected, notifications } = useWebSocket();
+  const { toast } = useToast();
+
+  // Define interface for vault items
+  interface VaultItem {
+    id: number;
+    name: string;
+    url?: string;
+    expiryDate?: string;
+    isExpired?: boolean;
+    [key: string]: any;
+  }
+
+  // Check for expiring passwords on initial load
+  useEffect(() => {
+    if (user) {
+      setExpiringPasswords(prev => ({ ...prev, loading: true }));
+      
+      fetch('/api/check-expiring-passwords')
+        .then(res => res.json())
+        .then(data => {
+          setExpiringPasswords({
+            loading: false,
+            expiringCount: data.expiringItems.filter((item: VaultItem) => !item.isExpired).length,
+            expiredCount: data.expiringItems.filter((item: VaultItem) => item.isExpired).length,
+            items: data.expiringItems
+          });
+        })
+        .catch(err => {
+          console.error('Error checking for expiring passwords:', err);
+          setExpiringPasswords(prev => ({ ...prev, loading: false }));
+        });
+    }
+  }, [user]);
+
+  // Listen for password expiration notifications
+  useEffect(() => {
+    const passwordNotifications = notifications.filter(
+      (n) => n.title === 'Password Security Alert'
+    );
+    
+    if (passwordNotifications.length > 0) {
+      const latestNotification = passwordNotifications[0];
+      if (latestNotification.data) {
+        setExpiringPasswords({
+          loading: false,
+          expiringCount: latestNotification.data.expiringCount || 0,
+          expiredCount: latestNotification.data.expiredCount || 0,
+          items: latestNotification.data.items || []
+        });
+      }
+    }
+  }, [notifications]);
+
+  // Function to check and send notifications about expiring passwords
+  const notifyExpiringPasswords = async () => {
+    try {
+      const response = await fetch('/api/notify-expiring-passwords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sendEmail: false // Set to true if you want to send email notifications
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        toast({
+          title: "Notification sent",
+          description: `Checked ${result.expiringCount + result.expiredCount} passwords for expiration.`,
+        });
+      }
+    } catch (error) {
+      console.error('Error sending password expiry notifications:', error);
+      toast({
+        title: "Notification failed",
+        description: "Could not check for expiring passwords. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+  
   return (
     <AppLayout title="Dashboard">
+      {/* Expiring Passwords Alert */}
+      {(expiringPasswords.expiringCount > 0 || expiringPasswords.expiredCount > 0) && (
+        <Card className="mb-6 border-yellow-500/30 bg-yellow-500/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-yellow-400 flex items-center">
+              <AlertTriangle className="mr-2 h-5 w-5" />
+              Password Expiration Alert
+            </CardTitle>
+            <Button 
+              onClick={notifyExpiringPasswords} 
+              variant="outline" 
+              size="sm"
+              className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/20"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Notify Me
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-2">
+              {expiringPasswords.expiredCount > 0 && (
+                <span className="text-red-400 font-semibold">
+                  {expiringPasswords.expiredCount} password{expiringPasswords.expiredCount !== 1 ? 's' : ''} expired. 
+                </span>
+              )}
+              {expiringPasswords.expiringCount > 0 && (
+                <span className="text-yellow-400 font-semibold">
+                  {expiringPasswords.expiringCount} password{expiringPasswords.expiringCount !== 1 ? 's' : ''} expiring soon.
+                </span>
+              )}
+              {' '}Please update these passwords as soon as possible.
+            </p>
+            <div className="flex gap-2 mt-2">
+              <Link href="/vault">
+                <Button size="sm" variant="secondary">
+                  <Clock className="mr-2 h-4 w-4" />
+                  Manage Passwords
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       {/* Overview Cards */}
       <div className="glass-card rounded-2xl p-6 mb-6">
         <h2 className="text-2xl font-bold mb-6">Welcome to SecurePass</h2>
@@ -92,6 +234,11 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+      </div>
+      
+      {/* Test Notifications */}
+      <div className="mb-6">
+        <TestNotifications />
       </div>
       
       {/* Password Health Dashboard */}

@@ -10,6 +10,9 @@ export const users = pgTable("users", {
   email: text("email"),
   twoFactorEnabled: boolean("two_factor_enabled").default(false),
   twoFactorSecret: text("two_factor_secret"),
+  firebaseUid: text("firebase_uid"),
+  isOAuthUser: boolean("is_oauth_user").default(false),
+  avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
