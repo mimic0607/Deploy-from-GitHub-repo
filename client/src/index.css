@@ -103,3 +103,15 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(167, 109, 255, 0.8);
 }
+
+/* Force input text to be white and visible */
+input, textarea, select, .select-trigger {
+  color: white !important;
+  caret-color: white !important;
+}
+
+/* Make placeholders more visible */
+::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1 !important;
+}
