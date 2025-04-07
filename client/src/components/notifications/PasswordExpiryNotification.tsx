@@ -109,10 +109,7 @@ export function PasswordExpiryNotification({ daysWarning = 7 }: PasswordExpiryNo
     }
   };
 
-  // No notifications if no expiring items
-  if (expiringItems.length === 0) {
-    return null;
-  }
+  // Always show the bell icon, even if there are no notifications
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -123,64 +120,91 @@ export function PasswordExpiryNotification({ daysWarning = 7 }: PasswordExpiryNo
           className="relative"
         >
           <Bell className="h-5 w-5" />
-          <Badge
-            variant="default"
-            className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-red-500 text-white"
-          >
-            {expiringItems.length}
-          </Badge>
+          {expiringItems.length > 0 && (
+            <Badge
+              variant="default"
+              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-red-500 text-white"
+            >
+              {expiringItems.length}
+            </Badge>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96" align="end">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <AlertTriangle className="h-5 w-5 mr-2 text-amber-500" />
-              Password Security Alert
+              {expiringItems.length > 0 ? (
+                <>
+                  <AlertTriangle className="h-5 w-5 mr-2 text-amber-500" />
+                  Password Security Alert
+                </>
+              ) : (
+                <>
+                  <Bell className="h-5 w-5 mr-2 text-slate-500" />
+                  Notifications
+                </>
+              )}
             </CardTitle>
             <CardDescription>
-              The following passwords are expiring soon or have already expired.
+              {expiringItems.length > 0 
+                ? "The following passwords are expiring soon or have already expired."
+                : "You'll be notified here when your passwords are about to expire."}
             </CardDescription>
           </CardHeader>
           <CardContent className="max-h-72 overflow-y-auto">
-            {expiringItems.map((item) => {
-              const expiryDate = new Date(item.expiryDate);
-              const isExpired = new Date() > expiryDate;
-              
-              return (
-                <div 
-                  key={item.id} 
-                  className="border-b border-gray-200 dark:border-gray-700 py-2 last:border-0"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-sm text-gray-500">{item.username}</p>
+            {expiringItems.length > 0 ? (
+              expiringItems.map((item) => {
+                const expiryDate = new Date(item.expiryDate);
+                const isExpired = new Date() > expiryDate;
+                
+                return (
+                  <div 
+                    key={item.id} 
+                    className="border-b border-gray-200 dark:border-gray-700 py-2 last:border-0"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium">{item.name}</h3>
+                        <p className="text-sm text-gray-500">{item.username}</p>
+                      </div>
+                      <Badge variant={isExpired ? "destructive" : "outline"} className="flex items-center">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {isExpired 
+                          ? 'Expired' 
+                          : `Expires ${formatDistanceToNow(expiryDate, { addSuffix: true })}`}
+                      </Badge>
                     </div>
-                    <Badge variant={isExpired ? "destructive" : "outline"} className="flex items-center">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {isExpired 
-                        ? 'Expired' 
-                        : `Expires ${formatDistanceToNow(expiryDate, { addSuffix: true })}`}
-                    </Badge>
                   </div>
+                );
+              })
+            ) : (
+              <div className="py-6 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-6 w-6 text-green-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
                 </div>
-              );
-            })}
+                <h3 className="text-base font-medium">All Good!</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  No passwords are expiring soon.
+                </p>
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button 
               variant="outline"
               onClick={() => setIsOpen(false)}
             >
-              Dismiss
+              Close
             </Button>
-            <Button
-              onClick={sendEmailNotification}
-              disabled={isLoading}
-            >
-              Send Me Email Reminder
-            </Button>
+            {expiringItems.length > 0 && (
+              <Button
+                onClick={sendEmailNotification}
+                disabled={isLoading}
+              >
+                Send Me Email Reminder
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </PopoverContent>
