@@ -104,14 +104,15 @@
   background: rgba(167, 109, 255, 0.8);
 }
 
-/* Force input text to be white and visible */
+/* Force input text to be dark and visible */
 input, textarea, select, .select-trigger {
-  color: white !important;
-  caret-color: white !important;
+  color: #333333 !important;
+  caret-color: #333333 !important;
+  background-color: white !important;
 }
 
 /* Make placeholders more visible */
 ::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(102, 102, 102, 0.7) !important;
   opacity: 1 !important;
 }
