@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { z } from "zod";
 import { PasswordService } from "./services/passwordService";
@@ -10,6 +11,9 @@ import { isPasswordExpiring, isPasswordExpired } from "./utils/passwordUtils";
 import { insertVaultItemSchema, insertCryptoDocumentSchema, insertPasswordShareSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication
+  setupAuth(app);
+  
   // Create API router
   const apiRouter = express.Router();
   
@@ -69,8 +73,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vault Items Routes
   apiRouter.get('/vault', async (req: Request, res: Response) => {
     try {
-      // In a real app, this would use the authenticated user's ID
-      const userId = 1; // Mock user ID
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
       
       const vaultItems = await storage.getVaultItems(userId);
       return res.json(vaultItems);
@@ -82,7 +92,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.post('/vault', async (req: Request, res: Response) => {
     try {
-      const validationResult = insertVaultItemSchema.safeParse(req.body);
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+      
+      // Include the user ID in the data
+      const itemWithUserId = { ...req.body, userId };
+      
+      const validationResult = insertVaultItemSchema.safeParse(itemWithUserId);
       
       if (!validationResult.success) {
         return res.status(400).json({ 
@@ -252,8 +274,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.get('/crypto-documents', async (req: Request, res: Response) => {
     try {
-      // In a real app, this would use the authenticated user's ID
-      const userId = 1; // Mock user ID
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
       
       const cryptoDocs = await storage.getCryptoDocumentsByUser(userId);
       return res.json(cryptoDocs);
@@ -285,8 +313,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.get('/shared-passwords', async (req: Request, res: Response) => {
     try {
-      // In a real app, this would use the authenticated user's ID
-      const userId = 1; // Mock user ID
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
       
       const sharedPasswords = await storage.getPasswordSharesByUser(userId);
       return res.json(sharedPasswords);
@@ -299,8 +333,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Password Expiry Checking and Notifications
   apiRouter.get('/check-expiring-passwords', async (req: Request, res: Response) => {
     try {
-      // In a real app, this would use the authenticated user's ID
-      const userId = 1; // Mock user ID
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+      
       const daysWarning = parseInt(req.query.daysWarning as string) || 7;
       
       const vaultItems = await storage.getVaultItems(userId);
@@ -324,24 +365,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.post('/notify-expiring-passwords', async (req: Request, res: Response) => {
     try {
-      // In a real app, this would use the authenticated user's ID
-      const userId = 1; // Mock user ID
-      const mockUser = { 
-        id: userId, 
-        email: 'user@example.com', 
-        username: 'user',
-        password: 'mockPassword',
-        masterPassword: 'mockMasterPassword',
-        twoFactorEnabled: false,
-        twoFactorSecret: null,
-        createdAt: new Date()
-      };
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
       
       // Implementation would depend on the notification service
       // This could use email, SMS, push notifications, etc.
       const daysWarning = parseInt(req.query.daysWarning as string) || 7;
       const sendEmail = req.body.sendEmail || false;
-      const notificationsSent = await NotificationService.notifyExpiringPasswords(mockUser, daysWarning, sendEmail);
+      const notificationsSent = await NotificationService.notifyExpiringPasswords(req.user, daysWarning, sendEmail);
       
       return res.json({ success: true, notificationsSent });
     } catch (error) {

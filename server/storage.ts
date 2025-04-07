@@ -87,7 +87,17 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
     const now = new Date();
-    const user: User = { ...insertUser, id, createdAt: now };
+    
+    // Ensure proper nulls for optional fields
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      createdAt: now,
+      email: insertUser.email || null,
+      twoFactorEnabled: insertUser.twoFactorEnabled || null,
+      twoFactorSecret: insertUser.twoFactorSecret || null
+    };
+    
     this.users.set(id, user);
     return user;
   }
@@ -118,8 +128,12 @@ export class MemStorage implements IStorage {
     const vaultItem: VaultItem = { 
       ...item, 
       id, 
-      createdAt: now, 
-      lastUsed: item.lastUsed || now 
+      createdAt: now,
+      url: item.url || null,
+      category: item.category || null,
+      notes: item.notes || null,
+      expiryDate: item.expiryDate || null,
+      lastUsed: now 
     };
     this.vaultItems.set(id, vaultItem);
     return vaultItem;
@@ -142,7 +156,13 @@ export class MemStorage implements IStorage {
   async createPasswordShare(share: InsertPasswordShare): Promise<PasswordShare> {
     const id = this.passwordShareIdCounter++;
     const now = new Date();
-    const passwordShare: PasswordShare = { ...share, id, createdAt: now };
+    const passwordShare: PasswordShare = { 
+      ...share, 
+      id, 
+      createdAt: now,
+      expiresAt: share.expiresAt || null,
+      accessCode: share.accessCode || null 
+    };
     this.passwordShares.set(id, passwordShare);
     return passwordShare;
   }
@@ -210,9 +230,197 @@ export class MemStorage implements IStorage {
     if (userBackups.length === 0) return undefined;
     
     return userBackups.reduce((latest, current) => {
-      return latest.createdAt > current.createdAt ? latest : current;
+      const latestDate = latest.createdAt ? new Date(latest.createdAt).getTime() : 0;
+      const currentDate = current.createdAt ? new Date(current.createdAt).getTime() : 0;
+      return latestDate > currentDate ? latest : current;
     });
   }
 }
 
-export const storage = new MemStorage();
+import { db } from './db';
+import { eq, and, desc } from 'drizzle-orm';
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+import * as schema from "@shared/schema";
+
+const PostgresSessionStore = connectPg(session);
+
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({ 
+      pool: (db as any).client, 
+      createTableIfMissing: true 
+    });
+  }
+
+  // User methods
+  async getUser(id: number): Promise<schema.User | undefined> {
+    const [user] = await db.select().from(schema.users).where(eq(schema.users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<schema.User | undefined> {
+    const [user] = await db.select().from(schema.users).where(eq(schema.users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<schema.User | undefined> {
+    if (!email) return undefined;
+    const [user] = await db.select().from(schema.users).where(eq(schema.users.email, email));
+    return user;
+  }
+
+  async createUser(insertUser: schema.InsertUser): Promise<schema.User> {
+    const [user] = await db.insert(schema.users).values(insertUser).returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<schema.User>): Promise<schema.User | undefined> {
+    const [updatedUser] = await db
+      .update(schema.users)
+      .set(updates)
+      .where(eq(schema.users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  // Vault item methods
+  async getVaultItems(userId: number): Promise<schema.VaultItem[]> {
+    return await db
+      .select()
+      .from(schema.vaultItems)
+      .where(eq(schema.vaultItems.userId, userId));
+  }
+
+  async getVaultItem(id: number): Promise<schema.VaultItem | undefined> {
+    const [item] = await db
+      .select()
+      .from(schema.vaultItems)
+      .where(eq(schema.vaultItems.id, id));
+    return item;
+  }
+
+  async createVaultItem(item: schema.InsertVaultItem): Promise<schema.VaultItem> {
+    const [vaultItem] = await db
+      .insert(schema.vaultItems)
+      .values(item)
+      .returning();
+    return vaultItem;
+  }
+
+  async updateVaultItem(id: number, updates: Partial<schema.VaultItem>): Promise<schema.VaultItem | undefined> {
+    const [updatedItem] = await db
+      .update(schema.vaultItems)
+      .set(updates)
+      .where(eq(schema.vaultItems.id, id))
+      .returning();
+    return updatedItem;
+  }
+
+  async deleteVaultItem(id: number): Promise<boolean> {
+    const result = await db
+      .delete(schema.vaultItems)
+      .where(eq(schema.vaultItems.id, id));
+    return Boolean(result);
+  }
+
+  // Password sharing methods
+  async createPasswordShare(share: schema.InsertPasswordShare): Promise<schema.PasswordShare> {
+    const [passwordShare] = await db
+      .insert(schema.passwordShares)
+      .values(share)
+      .returning();
+    return passwordShare;
+  }
+
+  async getPasswordShareById(id: number): Promise<schema.PasswordShare | undefined> {
+    const [share] = await db
+      .select()
+      .from(schema.passwordShares)
+      .where(eq(schema.passwordShares.id, id));
+    return share;
+  }
+
+  async getPasswordSharesByUser(userId: number): Promise<schema.PasswordShare[]> {
+    return await db
+      .select()
+      .from(schema.passwordShares)
+      .where(eq(schema.passwordShares.senderId, userId));
+  }
+
+  async getPasswordSharesByEmail(email: string): Promise<schema.PasswordShare[]> {
+    return await db
+      .select()
+      .from(schema.passwordShares)
+      .where(eq(schema.passwordShares.recipientEmail, email));
+  }
+
+  async deletePasswordShare(id: number): Promise<boolean> {
+    const result = await db
+      .delete(schema.passwordShares)
+      .where(eq(schema.passwordShares.id, id));
+    return Boolean(result);
+  }
+
+  // Crypto document methods
+  async createCryptoDocument(doc: schema.InsertCryptoDocument): Promise<schema.CryptoDocument> {
+    const [cryptoDoc] = await db
+      .insert(schema.cryptoDocuments)
+      .values(doc)
+      .returning();
+    return cryptoDoc;
+  }
+
+  async getCryptoDocumentsByUser(userId: number): Promise<schema.CryptoDocument[]> {
+    return await db
+      .select()
+      .from(schema.cryptoDocuments)
+      .where(eq(schema.cryptoDocuments.userId, userId));
+  }
+
+  async getCryptoDocument(id: number): Promise<schema.CryptoDocument | undefined> {
+    const [doc] = await db
+      .select()
+      .from(schema.cryptoDocuments)
+      .where(eq(schema.cryptoDocuments.id, id));
+    return doc;
+  }
+
+  async deleteCryptoDocument(id: number): Promise<boolean> {
+    const result = await db
+      .delete(schema.cryptoDocuments)
+      .where(eq(schema.cryptoDocuments.id, id));
+    return Boolean(result);
+  }
+
+  // Password backup methods
+  async createPasswordBackup(backup: schema.InsertPasswordBackup): Promise<schema.PasswordBackup> {
+    const [passwordBackup] = await db
+      .insert(schema.passwordBackups)
+      .values(backup)
+      .returning();
+    return passwordBackup;
+  }
+
+  async getPasswordBackupsByUser(userId: number): Promise<schema.PasswordBackup[]> {
+    return await db
+      .select()
+      .from(schema.passwordBackups)
+      .where(eq(schema.passwordBackups.userId, userId));
+  }
+
+  async getLatestPasswordBackup(userId: number): Promise<schema.PasswordBackup | undefined> {
+    const [backup] = await db
+      .select()
+      .from(schema.passwordBackups)
+      .where(eq(schema.passwordBackups.userId, userId))
+      .orderBy(desc(schema.passwordBackups.createdAt))
+      .limit(1);
+    return backup;
+  }
+}
+
+// Use DatabaseStorage for production
+export const storage = new DatabaseStorage();

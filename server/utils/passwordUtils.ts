@@ -7,20 +7,15 @@
 export function isPasswordExpiring(expiryDate: string | Date | null | undefined, daysWarning: number = 7): boolean {
   if (!expiryDate) return false;
   
-  try {
-    // Convert to Date object if it's a string
-    const expiry = expiryDate instanceof Date ? expiryDate : new Date(expiryDate.toString());
-    const now = new Date();
-    
-    // Calculate the difference in days
-    const diffTime = expiry.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Password is expiring if it's within the warning period but not already expired
-    return diffDays >= 0 && diffDays <= daysWarning;
-  } catch {
-    return false;
-  }
+  const expiry = typeof expiryDate === 'string' ? new Date(expiryDate) : expiryDate;
+  const today = new Date();
+  
+  // Calculate warning date (today + warning period)
+  const warningDate = new Date(today);
+  warningDate.setDate(today.getDate() + daysWarning);
+  
+  // A password is expiring if its expiry date is before the warning date but after today
+  return expiry > today && expiry <= warningDate;
 }
 
 /**
@@ -31,14 +26,9 @@ export function isPasswordExpiring(expiryDate: string | Date | null | undefined,
 export function isPasswordExpired(expiryDate: string | Date | null | undefined): boolean {
   if (!expiryDate) return false;
   
-  try {
-    // Convert to Date object if it's a string
-    const expiry = expiryDate instanceof Date ? expiryDate : new Date(expiryDate.toString());
-    const now = new Date();
-    
-    // Password is expired if expiry date is in the past
-    return expiry < now;
-  } catch {
-    return false;
-  }
+  const expiry = typeof expiryDate === 'string' ? new Date(expiryDate) : expiryDate;
+  const today = new Date();
+  
+  // A password is expired if its expiry date is before today
+  return expiry < today;
 }
