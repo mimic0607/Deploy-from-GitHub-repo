@@ -5,8 +5,40 @@ import type {
   DecryptionRequest, 
   HashResult, 
   EncryptionAlgorithm, 
-  HashingAlgorithm 
+  HashingAlgorithm,
+  EncryptionType
 } from '@/types';
+
+// Simple implementation of password-based key derivation
+export function deriveKeyFromPassword(password: string, salt = 'secure-password-vault'): string {
+  return CryptoJS.PBKDF2(password, salt, {
+    keySize: 256 / 32,
+    iterations: 1000
+  }).toString();
+}
+
+// Mock RSA implementation (in a real app, use a proper RSA library)
+const mockRsaEncrypt = (text: string, publicKey: string): string => {
+  // This is just a simple placeholder in lieu of actual RSA
+  // In a real app, use a proper RSA implementation
+  return CryptoJS.AES.encrypt(text, publicKey).toString();
+};
+
+const mockRsaDecrypt = (encryptedText: string, privateKey: string): string => {
+  // This is just a simple placeholder in lieu of actual RSA
+  // In a real app, use a proper RSA implementation
+  const bytes = CryptoJS.AES.decrypt(encryptedText, privateKey);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
+
+const generateMockRsaKeyPair = (): { publicKey: string, privateKey: string } => {
+  // In a real implementation, this would generate actual RSA keys
+  const seed = Math.random().toString(36).substring(2, 15);
+  return {
+    publicKey: `public-${seed}`,
+    privateKey: `private-${seed}`
+  };
+};
 
 export async function encryptText(
   text: string, 
@@ -14,6 +46,20 @@ export async function encryptText(
   algorithm: EncryptionAlgorithm = 'aes'
 ): Promise<EncryptionResult> {
   try {
+    // RSA encryption (asymmetric)
+    if (algorithm === 'rsa') {
+      // In a real implementation, the key would be the public key
+      // For our mock implementation, we'll generate a key pair
+      const keyPair = generateMockRsaKeyPair();
+      const encryptedText = mockRsaEncrypt(text, keyPair.publicKey);
+      
+      return { 
+        encrypted: encryptedText,
+        publicKey: keyPair.publicKey, 
+        tag: keyPair.privateKey  // We're storing the private key in the tag for demo purposes
+      };
+    }
+    
     // Client-side encryption for algorithms not supported by the server
     if (algorithm === 'tripledes' || algorithm === 'blowfish') {
       let encryptedText = '';
@@ -47,6 +93,12 @@ export async function decryptText(
   data: DecryptionRequest
 ): Promise<string> {
   try {
+    // RSA decryption
+    if (data.algorithm === 'rsa') {
+      // In our mock implementation, the private key is stored in the tag
+      return mockRsaDecrypt(data.encrypted, data.tag || '');
+    }
+    
     // Client-side decryption for algorithms not supported by the server
     if (data.algorithm === 'tripledes' || data.algorithm === 'blowfish') {
       let decryptedText = '';

@@ -6,14 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { encryptText, decryptText, hashText } from '@/lib/crypto';
+import { encryptText, decryptText, hashText, deriveKeyFromPassword } from '@/lib/crypto';
 import { copyToClipboard } from '@/lib/utils';
 
 export default function CryptoTools() {
   const { toast } = useToast();
   
   // Encryption state
-  const [encryptionMethod, setEncryptionMethod] = useState<'aes' | 'fernet' | 'tripledes' | 'blowfish'>('aes');
+  const [encryptionType, setEncryptionType] = useState<'symmetric' | 'asymmetric'>('symmetric');
+  const [encryptionMethod, setEncryptionMethod] = useState<'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa'>('aes');
   const [encryptionKey, setEncryptionKey] = useState('');
   const [showEncryptionKey, setShowEncryptionKey] = useState(false);
   const [textToEncrypt, setTextToEncrypt] = useState('');
@@ -24,6 +25,7 @@ export default function CryptoTools() {
   } | null>(null);
   const [isEncrypting, setIsEncrypting] = useState(false);
   const [isDecrypting, setIsDecrypting] = useState(false);
+  const [usePasswordBasedKey, setUsePasswordBasedKey] = useState(true);
   
   // Hashing state
   const [hashAlgorithm, setHashAlgorithm] = useState<'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160'>('sha256');
@@ -52,13 +54,29 @@ export default function CryptoTools() {
     
     try {
       setIsEncrypting(true);
-      const result = await encryptText(textToEncrypt, encryptionKey, encryptionMethod);
+      
+      // Use the raw key or derive it from password
+      const keyToUse = usePasswordBasedKey && encryptionType === 'symmetric' 
+        ? deriveKeyFromPassword(encryptionKey) 
+        : encryptionKey;
+      
+      const result = await encryptText(textToEncrypt, keyToUse, encryptionMethod);
       setEncryptedResult(result);
       
-      toast({
-        title: "Encryption successful",
-        description: "Your text has been encrypted"
-      });
+      // If using RSA, show the user the public/private key information
+      if (encryptionMethod === 'rsa' && result.publicKey && result.tag) {
+        toast({
+          title: "Encryption successful",
+          description: "Your text has been encrypted with RSA. The private key is included in the encrypted result for demonstration purposes."
+        });
+      } else {
+        toast({
+          title: "Encryption successful",
+          description: usePasswordBasedKey 
+            ? "Your text has been encrypted with a key derived from your password" 
+            : "Your text has been encrypted"
+        });
+      }
     } catch (error) {
       toast({
         title: "Encryption failed",
@@ -92,11 +110,16 @@ export default function CryptoTools() {
     try {
       setIsDecrypting(true);
       
+      // Use the raw key or derive it from password for symmetric algorithms
+      const keyToUse = usePasswordBasedKey && encryptionType === 'symmetric' 
+        ? deriveKeyFromPassword(encryptionKey) 
+        : encryptionKey;
+      
       const decrypted = await decryptText({
         encrypted: encryptedResult.encrypted,
         iv: encryptedResult.iv,
         tag: encryptedResult.tag,
-        key: encryptionKey,
+        key: keyToUse,
         algorithm: encryptionMethod
       });
       
@@ -105,7 +128,9 @@ export default function CryptoTools() {
       
       toast({
         title: "Decryption successful",
-        description: "Your text has been decrypted"
+        description: usePasswordBasedKey && encryptionType === 'symmetric'
+          ? "Your text has been decrypted with a key derived from your password"
+          : "Your text has been decrypted"
       });
     } catch (error) {
       toast({
@@ -202,29 +227,83 @@ export default function CryptoTools() {
             <h3 className="text-lg font-semibold mb-2">Text Encryption/Decryption</h3>
             
             <div className="mb-3">
-              <Label className="block text-sm font-medium mb-1">Encryption Method</Label>
+              <Label className="block text-sm font-medium mb-1">Encryption Type</Label>
               <Select 
-                value={encryptionMethod} 
-                onValueChange={(value: 'aes' | 'fernet' | 'tripledes' | 'blowfish') => setEncryptionMethod(value)}
+                value={encryptionType} 
+                onValueChange={(value: 'symmetric' | 'asymmetric') => {
+                  setEncryptionType(value);
+                  if (value === 'symmetric') {
+                    setEncryptionMethod('aes');
+                  } else {
+                    setEncryptionMethod('rsa');
+                  }
+                }}
               >
                 <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
-                  <SelectValue placeholder="Select encryption method" />
+                  <SelectValue placeholder="Select encryption type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
-                  <SelectItem value="aes">AES-256 (Recommended)</SelectItem>
-                  <SelectItem value="fernet">Fernet (Implementation of AES-128-CBC)</SelectItem>
-                  <SelectItem value="tripledes">Triple DES (Legacy)</SelectItem>
-                  <SelectItem value="blowfish">Blowfish (Legacy)</SelectItem>
+                  <SelectItem value="symmetric">Symmetric (Same key for encryption/decryption)</SelectItem>
+                  <SelectItem value="asymmetric">Asymmetric (Public/private key pair)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div className="mb-3">
-              <Label className="block text-sm font-medium mb-1">Encryption Key</Label>
+              <Label className="block text-sm font-medium mb-1">Encryption Algorithm</Label>
+              <Select 
+                value={encryptionMethod} 
+                onValueChange={(value: 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa') => setEncryptionMethod(value)}
+              >
+                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                  <SelectValue placeholder="Select encryption algorithm" />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-gray-800">
+                  {encryptionType === 'symmetric' ? (
+                    <>
+                      <SelectItem value="aes">AES-256 (Recommended)</SelectItem>
+                      <SelectItem value="fernet">Fernet (Implementation of AES-128-CBC)</SelectItem>
+                      <SelectItem value="tripledes">Triple DES (Legacy)</SelectItem>
+                      <SelectItem value="blowfish">Blowfish (Legacy)</SelectItem>
+                    </>
+                  ) : (
+                    <>
+                      <SelectItem value="rsa">RSA (Public/Private Keys)</SelectItem>
+                    </>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-1">
+                <Label className="block text-sm font-medium">Encryption Key</Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-purple-primary px-2 h-6"
+                  onClick={() => {
+                    // Generate a random key
+                    const randomKey = Array.from(
+                      { length: 16 },
+                      () => Math.floor(Math.random() * 36).toString(36)
+                    ).join('');
+                    setEncryptionKey(randomKey);
+                    toast({
+                      title: "Key generated",
+                      description: "A secure random key has been generated"
+                    });
+                  }}
+                >
+                  Generate Key
+                </Button>
+              </div>
+              
               <div className="relative">
                 <Input
                   type={showEncryptionKey ? "text" : "password"}
-                  placeholder="Enter encryption key..."
+                  placeholder={usePasswordBasedKey ? "Enter a memorable password..." : "Enter encryption key..."}
                   value={encryptionKey}
                   onChange={(e) => setEncryptionKey(e.target.value)}
                   className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
@@ -249,6 +328,24 @@ export default function CryptoTools() {
                   )}
                 </button>
               </div>
+              
+              <div className="mt-2 flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="password-based-key"
+                  checked={usePasswordBasedKey}
+                  onChange={() => setUsePasswordBasedKey(!usePasswordBasedKey)}
+                  className="rounded border-purple-primary/50 text-purple-primary focus:ring-purple-primary"
+                />
+                <label htmlFor="password-based-key" className="text-sm text-gray-300">
+                  Use password-based key (easier to remember)
+                </label>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                {usePasswordBasedKey 
+                  ? "Your password will be securely transformed into an encryption key" 
+                  : "Use a strong random key for maximum security"}
+              </p>
             </div>
             
             <div className="mb-3">

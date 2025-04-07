@@ -64,13 +64,17 @@ export interface GeneratedPassword {
 }
 
 // Crypto Types
-export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish';
+export type EncryptionType = 'symmetric' | 'asymmetric';
+export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'rsa';
+export type SymmetricAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish';
+export type AsymmetricAlgorithm = 'rsa';
 export type HashingAlgorithm = 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160';
 
 export interface EncryptionResult {
   encrypted: string;
   iv?: string;
   tag?: string;
+  publicKey?: string; // For asymmetric encryption
 }
 
 export interface DecryptionRequest {
