@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
-import { Search, Bell, HelpCircle, Menu } from 'lucide-react';
+import { Search, HelpCircle, Menu } from 'lucide-react';
+import { PasswordExpiryNotification } from '../notifications/PasswordExpiryNotification';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -61,9 +62,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-2 rounded-full hover:bg-purple-500/20 transition-fade">
-                <Bell className="h-5 w-5 text-purple-500" />
-              </button>
+              <PasswordExpiryNotification daysWarning={7} />
               <button className="p-2 rounded-full hover:bg-purple-500/20 transition-fade">
                 <HelpCircle className="h-5 w-5 text-purple-500" />
               </button>

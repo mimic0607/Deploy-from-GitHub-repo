@@ -5,6 +5,8 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { PasswordService } from "./services/passwordService";
 import { CryptoService } from "./services/cryptoService";
+import { NotificationService } from "./services/notificationService";
+import { isPasswordExpiring, isPasswordExpired } from "./utils/passwordUtils";
 import { insertVaultItemSchema, insertCryptoDocumentSchema, insertPasswordShareSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -294,6 +296,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Password Expiry Checking and Notifications
+  apiRouter.get('/check-expiring-passwords', async (req: Request, res: Response) => {
+    try {
+      // In a real app, this would use the authenticated user's ID
+      const userId = 1; // Mock user ID
+      const daysWarning = parseInt(req.query.daysWarning as string) || 7;
+      
+      const vaultItems = await storage.getVaultItems(userId);
+      
+      // Use the imported utility functions
+      
+      // Filter items that are expiring or expired
+      const expiringItems = vaultItems.filter(item => 
+        isPasswordExpiring(item.expiryDate, daysWarning) || isPasswordExpired(item.expiryDate)
+      );
+      
+      return res.json({
+        expiringCount: expiringItems.length,
+        expiringItems
+      });
+    } catch (error) {
+      console.error('Error checking expiring passwords:', error);
+      return res.status(500).json({ error: 'Failed to check expiring passwords' });
+    }
+  });
+  
+  apiRouter.post('/notify-expiring-passwords', async (req: Request, res: Response) => {
+    try {
+      // In a real app, this would use the authenticated user's ID
+      const userId = 1; // Mock user ID
+      const mockUser = { 
+        id: userId, 
+        email: 'user@example.com', 
+        username: 'user',
+        password: 'mockPassword',
+        masterPassword: 'mockMasterPassword',
+        twoFactorEnabled: false,
+        twoFactorSecret: null,
+        createdAt: new Date()
+      };
+      
+      // Implementation would depend on the notification service
+      // This could use email, SMS, push notifications, etc.
+      const daysWarning = parseInt(req.query.daysWarning as string) || 7;
+      const sendEmail = req.body.sendEmail || false;
+      const notificationsSent = await NotificationService.notifyExpiringPasswords(mockUser, daysWarning, sendEmail);
+      
+      return res.json({ success: true, notificationsSent });
+    } catch (error) {
+      console.error('Error sending password expiry notifications:', error);
+      return res.status(500).json({ error: 'Failed to send password expiry notifications' });
+    }
+  });
+
   // Mount API router at /api prefix
   app.use('/api', apiRouter);
   
