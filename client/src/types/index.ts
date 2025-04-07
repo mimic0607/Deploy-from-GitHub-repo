@@ -68,7 +68,17 @@ export type EncryptionType = 'symmetric' | 'asymmetric';
 export type EncryptionAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'chacha20' | 'twofish' | 'serpent' | 'rsa' | 'ecc' | 'ed25519' | 'x25519';
 export type SymmetricAlgorithm = 'aes' | 'fernet' | 'tripledes' | 'blowfish' | 'chacha20' | 'twofish' | 'serpent';
 export type AsymmetricAlgorithm = 'rsa' | 'ecc' | 'ed25519' | 'x25519';
-export type HashingAlgorithm = 'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160' | 'sha3' | 'blake3' | 'whirlpool';
+export type HashingAlgorithm = 
+  // Standard algorithms
+  'sha256' | 'sha512' | 'md5' | 'blake2b' | 'ripemd160' | 'sha3' | 'blake3' | 'whirlpool' | 
+  // Password hashing algorithms
+  'bcrypt' | 
+  // Argon2 variants
+  'argon2d' | 'argon2i' | 'argon2id' | 
+  // Other password-specific algorithms
+  'scrypt' | 'pbkdf2' | 
+  // Experimental/next-gen
+  'yescrypt' | 'balloon' | 'catena';
 
 export interface EncryptionResult {
   encrypted: string;

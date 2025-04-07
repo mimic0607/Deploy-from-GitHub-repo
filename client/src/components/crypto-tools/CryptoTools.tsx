@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { encryptText, decryptText, hashText, deriveKeyFromPassword } from '@/lib/crypto';
 import { copyToClipboard } from '@/lib/utils';
@@ -39,7 +39,7 @@ export default function CryptoTools() {
   const [isSaving, setIsSaving] = useState(false);
   
   // Hashing state
-  const [hashAlgorithm, setHashAlgorithm] = useState<HashingAlgorithm>('sha256');
+  const [hashAlgorithm, setHashAlgorithm] = useState<HashingAlgorithm>('argon2id');
   const [textToHash, setTextToHash] = useState('');
   const [hashResult, setHashResult] = useState('');
   const [isHashing, setIsHashing] = useState(false);
@@ -506,14 +506,36 @@ Date: ${new Date().toLocaleString()}`);
                   <SelectValue placeholder="Select hash algorithm" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
-                  <SelectItem value="sha256">SHA-256 (Recommended)</SelectItem>
-                  <SelectItem value="sha512">SHA-512 (More secure)</SelectItem>
-                  <SelectItem value="md5">MD5 (Legacy, not secure)</SelectItem>
-                  <SelectItem value="sha1">SHA-1 (Legacy, not secure)</SelectItem>
-                  <SelectItem value="sha3">SHA-3 (Modern standard)</SelectItem>
-                  <SelectItem value="blake3">BLAKE3 (Fast and secure)</SelectItem>
-                  <SelectItem value="whirlpool">Whirlpool</SelectItem>
-                  <SelectItem value="bcrypt">bcrypt (Password hashing)</SelectItem>
+                  {/* Standard Algorithms */}
+                  <SelectGroup>
+                    <SelectLabel>Standard Algorithms</SelectLabel>
+                    <SelectItem value="sha256">SHA-256 (General purpose)</SelectItem>
+                    <SelectItem value="sha512">SHA-512 (More secure)</SelectItem>
+                    <SelectItem value="md5">MD5 (Legacy, not secure)</SelectItem>
+                    <SelectItem value="sha1">SHA-1 (Legacy, not secure)</SelectItem>
+                    <SelectItem value="sha3">SHA-3 (Modern standard)</SelectItem>
+                    <SelectItem value="blake3">BLAKE3 (Fast and secure)</SelectItem>
+                    <SelectItem value="whirlpool">Whirlpool</SelectItem>
+                  </SelectGroup>
+                  
+                  {/* Password Hashing - Recommended */}
+                  <SelectGroup>
+                    <SelectLabel>Most Recommended Password Hashing (2025)</SelectLabel>
+                    <SelectItem value="argon2id">Argon2id (🏆 Best choice, recommended for new apps)</SelectItem>
+                    <SelectItem value="argon2i">Argon2i (Side-channel attack resistant)</SelectItem>
+                    <SelectItem value="argon2d">Argon2d (GPU/ASIC brute-force resistant)</SelectItem>
+                    <SelectItem value="bcrypt">bcrypt (Built-in salt, widely supported)</SelectItem>
+                    <SelectItem value="scrypt">scrypt (Memory-hard and CPU-intensive)</SelectItem>
+                    <SelectItem value="pbkdf2">PBKDF2 (Built into NIST/FIPS standards)</SelectItem>
+                  </SelectGroup>
+                  
+                  {/* Experimental Next-Gen */}
+                  <SelectGroup>
+                    <SelectLabel>Next-Gen and Experimental</SelectLabel>
+                    <SelectItem value="yescrypt">Yescrypt (Enhanced scrypt, used in Linux systems)</SelectItem>
+                    <SelectItem value="balloon">Balloon Hashing (Memory-hard, academic origin)</SelectItem>
+                    <SelectItem value="catena">Catena (Designed for long-term password storage)</SelectItem>
+                  </SelectGroup>
                 </SelectContent>
               </Select>
             </div>

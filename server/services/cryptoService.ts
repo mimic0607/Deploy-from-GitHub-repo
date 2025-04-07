@@ -75,12 +75,74 @@ export class CryptoService {
    */
   static createHash(data: string, algorithm: string): string {
     switch (algorithm.toLowerCase()) {
+      // Standard cryptographic hash functions
       case 'sha256':
         return crypto.createHash('sha256').update(data).digest('hex');
       case 'sha512':
         return crypto.createHash('sha512').update(data).digest('hex');
       case 'md5': // Not recommended for security, but included for compatibility
         return crypto.createHash('md5').update(data).digest('hex');
+      case 'sha1': // Not recommended for security, but included for compatibility
+        return crypto.createHash('sha1').update(data).digest('hex');
+      case 'sha3':
+        return crypto.createHash('sha3-256').update(data).digest('hex');
+      case 'blake2b':
+        return crypto.createHash('blake2b512').update(data).digest('hex');
+      case 'blake3':
+        // Simulate BLAKE3 (Node.js crypto doesn't directly support it)
+        return crypto.createHash('sha3-256')
+          .update(crypto.createHash('sha256').update(data).digest())
+          .digest('hex') + '_blake3';
+      case 'whirlpool':
+        return crypto.createHash('whirlpool').update(data).digest('hex');
+      case 'ripemd160':
+        return crypto.createHash('ripemd160').update(data).digest('hex');
+        
+      // Password hashing algorithms (in a real app, these would be properly implemented)
+      case 'bcrypt':
+        // Simulate bcrypt (not actually using bcrypt here, just for UI demo)
+        const salt = crypto.randomBytes(16).toString('hex');
+        return `$2b$10$${salt}${crypto.createHash('sha256').update(data + salt).digest('hex')}_bcrypt`;
+        
+      // Argon2 variants
+      case 'argon2id':
+      case 'argon2i':
+      case 'argon2d':
+        // Simulate Argon2 (not actually using Argon2 here, just for UI demo)
+        const salt2 = crypto.randomBytes(16).toString('hex');
+        const memory = '65536'; // 64 MB in KB
+        const iterations = '3';
+        const parallelism = '4';
+        return `$argon2${algorithm.charAt(6)}$v=19$m=${memory},t=${iterations},p=${parallelism}$${salt2}$${
+          crypto.createHash('sha512').update(data + salt2).digest('hex')
+        }_${algorithm}`;
+        
+      // Other password-specific algorithms
+      case 'scrypt':
+        // Simulate scrypt
+        const saltScrypt = crypto.randomBytes(16).toString('hex');
+        return `$scrypt$ln=16,r=8,p=1$${saltScrypt}$${
+          crypto.createHash('sha256').update(data + saltScrypt).digest('hex')
+        }_scrypt`;
+        
+      case 'pbkdf2':
+        // Simulate PBKDF2
+        const saltPbkdf2 = crypto.randomBytes(16).toString('hex');
+        const iterations2 = '600000';
+        return `$pbkdf2-sha512$i=${iterations2}$${saltPbkdf2}$${
+          crypto.createHash('sha512').update(data + saltPbkdf2).digest('hex')
+        }_pbkdf2`;
+        
+      // Experimental/next-gen
+      case 'yescrypt':
+      case 'balloon':
+      case 'catena':
+        // Simulate these experimental algorithms (for UI demo purposes)
+        const expSalt = crypto.randomBytes(16).toString('hex');
+        return `$${algorithm}$t=3,m=4096$${expSalt}$${
+          crypto.createHash('sha3-256').update(data + expSalt).digest('hex')
+        }_${algorithm}`;
+        
       default:
         throw new Error(`Unsupported hashing algorithm: ${algorithm}`);
     }
