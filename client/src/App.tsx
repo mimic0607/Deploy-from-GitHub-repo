@@ -12,6 +12,7 @@ import PasswordVault from "@/pages/PasswordVault";
 import CryptoTools from "@/pages/CryptoTools";
 import PasswordSharing from "@/pages/PasswordSharing";
 import Settings from "@/pages/Settings";
+import DecentralizedFeatures from "@/pages/DecentralizedFeatures";
 import AuthPage from "@/pages/auth-page";
 import { useEffect } from "react";
 import { handleRedirectResult } from "@/lib/firebase";
@@ -27,6 +28,7 @@ function Router() {
       <ProtectedRoute path="/vault" component={PasswordVault}/>
       <ProtectedRoute path="/crypto-tools" component={CryptoTools}/>
       <ProtectedRoute path="/password-sharing" component={PasswordSharing}/>
+      <ProtectedRoute path="/decentralized" component={DecentralizedFeatures}/>
       <ProtectedRoute path="/settings" component={Settings}/>
       <Route path="/auth" component={AuthPage}/>
       {/* Fallback to 404 */}

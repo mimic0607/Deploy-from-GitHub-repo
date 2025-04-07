@@ -14,7 +14,8 @@ import {
   Share2,
   Cog,
   LogOut,
-  User
+  User,
+  Network
 } from 'lucide-react';
 
 interface NavItem {
@@ -58,6 +59,11 @@ export default function Sidebar() {
       icon: <Share2 className="w-6 h-6" />,
       label: 'Password Sharing',
       path: '/password-sharing'
+    },
+    {
+      icon: <Network className="w-6 h-6" />,
+      label: 'Decentralized',
+      path: '/decentralized'
     },
     {
       icon: <Cog className="w-6 h-6" />,
