@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Save } from 'lucide-react';
+import { Lock, Save, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { encryptText, decryptText, hashText, deriveKeyFromPassword } from '@/lib/crypto';
 import { copyToClipboard } from '@/lib/utils';
-import { EncryptionAlgorithm, HashingAlgorithm, SymmetricAlgorithm, AsymmetricAlgorithm, NewVaultItem } from '@/types';
+import { EncryptionAlgorithm, HashingAlgorithm, NewVaultItem } from '@/types';
 import { useData } from '@/lib/dataContext';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function CryptoTools() {
   const { toast } = useToast();
@@ -29,6 +30,13 @@ export default function CryptoTools() {
   const [isEncrypting, setIsEncrypting] = useState(false);
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [usePasswordBasedKey, setUsePasswordBasedKey] = useState(true);
+  
+  // Save to vault dialog state
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [vaultItemName, setVaultItemName] = useState('');
+  const [vaultItemCategory, setVaultItemCategory] = useState<string>('Crypto');
+  const [vaultItemNotes, setVaultItemNotes] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   
   // Hashing state
   const [hashAlgorithm, setHashAlgorithm] = useState<HashingAlgorithm>('sha256');
@@ -214,24 +222,38 @@ export default function CryptoTools() {
     }
   };
   
-  const handleSaveToVault = async () => {
+  const handleSaveToVault = () => {
+    if (!encryptedResult || !currentUser) return;
+    
+    // Prepare default values for vault item
+    setVaultItemName(`Encrypted with ${encryptionMethod.toUpperCase()}`);
+    setVaultItemCategory('Crypto');
+    setVaultItemNotes(`Encrypted with ${encryptionMethod.toUpperCase()}. 
+${usePasswordBasedKey ? 'Password-based key derivation was used.' : 'Direct encryption key was used.'}
+Original text length: ${textToEncrypt.length} characters
+Date: ${new Date().toLocaleString()}`);
+    
+    // Show the save dialog
+    setShowSaveDialog(true);
+  };
+  
+  const handleSaveConfirm = async () => {
     if (!encryptedResult || !currentUser) return;
     
     try {
+      setIsSaving(true);
+      
       const encryptionData = encryptionMethod === 'aes' 
         ? JSON.stringify(encryptedResult)
         : encryptedResult.encrypted;
         
       const vaultItem: NewVaultItem = {
         userId: currentUser.id,
-        name: `Encrypted with ${encryptionMethod.toUpperCase()}`,
+        name: vaultItemName || `Encrypted with ${encryptionMethod.toUpperCase()}`,
         username: `key: ${encryptionKey.substring(0, 8)}...`,
         password: encryptionData,
-        category: 'Crypto',
-        notes: `Encrypted with ${encryptionMethod.toUpperCase()}. 
-${usePasswordBasedKey ? 'Password-based key derivation was used.' : 'Direct encryption key was used.'}
-Original text length: ${textToEncrypt.length} characters
-Date: ${new Date().toLocaleString()}`
+        category: vaultItemCategory || 'Crypto',
+        notes: vaultItemNotes
       };
       
       await addVaultItem(vaultItem);
@@ -240,12 +262,17 @@ Date: ${new Date().toLocaleString()}`
         title: "Saved to vault",
         description: "Encrypted data has been saved to your password vault"
       });
+      
+      // Close the dialog
+      setShowSaveDialog(false);
     } catch (error) {
       toast({
         title: "Save failed",
         description: "Failed to save encrypted data to vault",
         variant: "destructive"
       });
+    } finally {
+      setIsSaving(false);
     }
   };
   
@@ -277,7 +304,7 @@ Date: ${new Date().toLocaleString()}`
                   }
                 }}
               >
-                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select encryption type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
@@ -293,7 +320,7 @@ Date: ${new Date().toLocaleString()}`
                 value={encryptionMethod} 
                 onValueChange={(value: EncryptionAlgorithm) => setEncryptionMethod(value)}
               >
-                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                   <SelectValue placeholder="Select encryption algorithm" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
@@ -415,11 +442,11 @@ Date: ${new Date().toLocaleString()}`
                     }
                     rows={5}
                     readOnly
-                    className="w-full font-mono text-sm bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none transition-fade"
+                    className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-3 text-gray-400 hover:text-white transition-fade"
+                    className="absolute right-3 top-2 text-gray-400 hover:text-white transition-fade"
                     onClick={handleCopyEncrypted}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -431,10 +458,10 @@ Date: ${new Date().toLocaleString()}`
               </div>
             )}
             
-            <div className="flex space-x-3 mb-3">
+            <div className="flex space-x-3">
               <Button
                 type="button"
-                className="flex-1 bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-full font-medium transition-fade glow-effect"
+                className="flex-1 bg-purple-primary hover:bg-purple-accent text-white py-2 rounded-lg font-medium transition-fade"
                 onClick={handleEncrypt}
                 disabled={isEncrypting}
               >
@@ -443,26 +470,24 @@ Date: ${new Date().toLocaleString()}`
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-full font-medium transition-fade"
+                className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-lg font-medium transition-fade"
                 onClick={handleDecrypt}
                 disabled={isDecrypting || !encryptedResult}
               >
                 {isDecrypting ? 'Decrypting...' : 'Decrypt'}
               </Button>
+              {encryptedResult && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 bg-transparent border border-purple-primary text-purple-primary hover:bg-purple-primary/10 py-2 rounded-lg font-medium transition-fade"
+                  onClick={handleSaveToVault}
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save to Vault
+                </Button>
+              )}
             </div>
-            
-            {encryptedResult && (
-              <Button
-                type="button"
-                variant="ghost"
-                className="w-full flex items-center justify-center space-x-2 border border-purple-primary/30 text-purple-primary hover:bg-purple-primary/10 py-2 rounded-full font-medium transition-fade"
-                onClick={handleSaveToVault}
-                disabled={!currentUser}
-              >
-                <Save className="h-4 w-4" />
-                <span>Save to Password Vault</span>
-              </Button>
-            )}
           </div>
         </div>
         
@@ -472,29 +497,29 @@ Date: ${new Date().toLocaleString()}`
             <h3 className="text-lg font-semibold mb-2">Hashing Tools</h3>
             
             <div className="mb-3">
-              <Label className="block text-sm font-medium mb-1">Hashing Algorithm</Label>
+              <Label className="block text-sm font-medium mb-1">Hash Algorithm</Label>
               <Select 
                 value={hashAlgorithm} 
                 onValueChange={(value: HashingAlgorithm) => setHashAlgorithm(value)}
               >
-                <SelectTrigger className="w-full bg-white border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
-                  <SelectValue placeholder="Select hashing algorithm" />
+                <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+                  <SelectValue placeholder="Select hash algorithm" />
                 </SelectTrigger>
                 <SelectContent className="bg-white text-gray-800">
                   <SelectItem value="sha256">SHA-256 (Recommended)</SelectItem>
-                  <SelectItem value="sha512">SHA-512 (Strong)</SelectItem>
-                  <SelectItem value="sha3">SHA-3 (Post-quantum secure)</SelectItem>
-                  <SelectItem value="blake2b">BLAKE2b (Fast & Secure)</SelectItem>
-                  <SelectItem value="blake3">BLAKE3 (Super fast hashing)</SelectItem>
-                  <SelectItem value="ripemd160">RIPEMD-160 (Bitcoin)</SelectItem>
-                  <SelectItem value="whirlpool">Whirlpool (512-bit secure)</SelectItem>
-                  <SelectItem value="md5">MD5 (Not secure, legacy only)</SelectItem>
+                  <SelectItem value="sha512">SHA-512 (More secure)</SelectItem>
+                  <SelectItem value="md5">MD5 (Legacy, not secure)</SelectItem>
+                  <SelectItem value="sha1">SHA-1 (Legacy, not secure)</SelectItem>
+                  <SelectItem value="sha3">SHA-3 (Modern standard)</SelectItem>
+                  <SelectItem value="blake3">BLAKE3 (Fast and secure)</SelectItem>
+                  <SelectItem value="whirlpool">Whirlpool</SelectItem>
+                  <SelectItem value="bcrypt">bcrypt (Password hashing)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div className="mb-3">
-              <Label className="block text-sm font-medium mb-1">Text Input</Label>
+              <Label className="block text-sm font-medium mb-1">Text to Hash</Label>
               <Textarea
                 placeholder="Enter text to hash..."
                 rows={5}
@@ -504,29 +529,29 @@ Date: ${new Date().toLocaleString()}`
               />
             </div>
             
-            <div className="mb-4">
-              <Label className="block text-sm font-medium mb-1">Hash Output</Label>
-              <div className="relative">
-                <Input
-                  type="text"
-                  readOnly
-                  value={hashResult}
-                  className="w-full font-mono text-sm bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none transition-fade"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-2 text-gray-400 hover:text-white transition-fade"
-                  title="Copy Hash"
-                  onClick={handleCopyHash}
-                  disabled={!hashResult}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                  </svg>
-                </button>
+            {hashResult && (
+              <div className="mb-3">
+                <Label className="block text-sm font-medium mb-1">Hash Result</Label>
+                <div className="relative">
+                  <Textarea
+                    value={hashResult}
+                    rows={5}
+                    readOnly
+                    className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 pr-10 focus:outline-none focus:border-purple-primary transition-fade"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-2 text-gray-400 hover:text-white transition-fade"
+                    onClick={handleCopyHash}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
             
             <Button
               type="button"
@@ -539,6 +564,85 @@ Date: ${new Date().toLocaleString()}`
           </div>
         </div>
       </div>
+      
+      {/* Save to Vault Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="bg-purple-dark border border-purple-primary/30 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Save to Password Vault</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Enter details for this encrypted content
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="vault-item-name">Name</Label>
+              <Input
+                id="vault-item-name"
+                value={vaultItemName}
+                onChange={(e) => setVaultItemName(e.target.value)}
+                placeholder="Enter a name for this item"
+                className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="vault-item-category">Category</Label>
+              <Select 
+                value={vaultItemCategory} 
+                onValueChange={(value) => setVaultItemCategory(value)}
+              >
+                <SelectTrigger 
+                  id="vault-item-category"
+                  className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+                >
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-gray-800">
+                  <SelectItem value="Crypto">Crypto</SelectItem>
+                  <SelectItem value="Finance">Finance</SelectItem>
+                  <SelectItem value="Personal">Personal</SelectItem>
+                  <SelectItem value="Work">Work</SelectItem>
+                  <SelectItem value="Social">Social</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="vault-item-notes">Notes</Label>
+              <Textarea
+                id="vault-item-notes"
+                value={vaultItemNotes}
+                onChange={(e) => setVaultItemNotes(e.target.value)}
+                placeholder="Enter additional notes"
+                rows={4}
+                className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setShowSaveDialog(false)}
+              className="border border-purple-primary/30 text-white hover:bg-purple-primary/10"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveConfirm}
+              disabled={isSaving}
+              className="bg-purple-primary hover:bg-purple-accent text-white"
+            >
+              {isSaving ? 'Saving...' : 'Save to Vault'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

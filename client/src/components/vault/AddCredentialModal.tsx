@@ -270,10 +270,10 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
               value={formData.category} 
               onValueChange={handleCategoryChange}
             >
-              <SelectTrigger className="w-full bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
+              <SelectTrigger className="w-full bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-3 focus:outline-none focus:border-purple-primary transition-fade">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white text-gray-800">
                 {VaultCategories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}

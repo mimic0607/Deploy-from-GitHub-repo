@@ -156,7 +156,7 @@ export default function PasswordVault() {
           </div>
           <div className="flex space-x-4">
             <select 
-              className="bg-purple-dark/50 border border-purple-primary/30 rounded-lg py-2 px-4 focus:outline-none focus:border-purple-primary transition-fade"
+              className="bg-white text-gray-800 border border-purple-primary/30 rounded-lg py-2 px-4 focus:outline-none focus:border-purple-primary transition-fade"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
