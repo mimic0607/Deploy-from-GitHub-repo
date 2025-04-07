@@ -39,11 +39,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    // TEMPORARY: Allow websocket connection without authentication for testing purposes
-    // This will be removed when we have the Firebase credentials
-    const BYPASS_AUTH = true;
-    
-    if (!user && !BYPASS_AUTH) {
+    if (!user) {
       // Don't connect if not authenticated
       if (socket) {
         socket.close();
@@ -67,7 +63,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
       // Authenticate with the WebSocket server
       ws.send(JSON.stringify({
         type: 'auth',
-        userId: user?.id || 1 // Use temporary user ID if not authenticated
+        userId: user.id
       }));
     };
     

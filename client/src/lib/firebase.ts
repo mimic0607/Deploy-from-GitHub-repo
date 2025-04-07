@@ -9,34 +9,20 @@ import {
 } from "firebase/auth";
 import { apiRequest, queryClient } from "./queryClient";
 
-// Temporary placeholder Firebase configuration
-// This will be replaced with actual values when we have the Firebase credentials
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "PLACEHOLDER-API-KEY",
-  authDomain: "placeholder-project.firebaseapp.com",
-  projectId: "placeholder-project",
-  storageBucket: "placeholder-project.appspot.com",
-  appId: "placeholder-app-id",
+  apiKey: "AIzaSyDTNNBtBUKBq7nzkahMwMyf5tbzT47Y_E8",
+  authDomain: "pass-dc86f.firebaseapp.com",
+  projectId: "pass-dc86f",
+  storageBucket: "pass-dc86f.firebasestorage.app",
+  messagingSenderId: "786796771288",
+  appId: "1:786796771288:web:8aee76fe958c23f57a64ad",
+  measurementId: "G-83VFZ6EMHG"
 };
 
-// Create placeholder auth object
-let authInstance: any;
-
-try {
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  authInstance = getAuth(app);
-} catch (error) {
-  console.warn("Firebase initialization skipped due to missing credentials");
-  // Create mock auth object for testing
-  authInstance = {
-    currentUser: null,
-    onAuthStateChanged: (callback: any) => callback(null),
-    signOut: async () => Promise.resolve(),
-  };
-}
-
-export const auth = authInstance;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 // Sign in with Google popup

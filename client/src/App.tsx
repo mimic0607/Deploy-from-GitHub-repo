@@ -38,9 +38,7 @@ function Router() {
 function AppContent() {
   const { toast } = useToast();
   
-  // Temporarily disabled Firebase redirect handling
-  // We'll remove the comment when we have Firebase credentials
-  /*
+  // Handle Firebase redirect results when the app loads
   useEffect(() => {
     // Process Firebase redirect result
     async function processRedirect() {
@@ -64,7 +62,6 @@ function AppContent() {
     
     processRedirect();
   }, [toast]);
-  */
   
   return <Router />;
 }

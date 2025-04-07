@@ -520,16 +520,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Test WebSocket connection
   apiRouter.post('/test-websocket', (req: Request, res: Response) => {
-    // TEMPORARY: Allow testing without authentication
-    // This will be removed when we have the Firebase credentials
-    const BYPASS_AUTH = true;
-    
-    if (!req.isAuthenticated() && !BYPASS_AUTH) {
+    if (!req.isAuthenticated()) {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
-    // Use default user ID if not authenticated
-    const userId = req.user?.id || 1;
+    const userId = req.user?.id;
     
     // Get notification type from the request
     const notificationType = req.body.notificationType || 'info';
