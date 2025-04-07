@@ -1,8 +1,9 @@
 import React from 'react';
 import AppLayout from '@/components/layout/AppLayout';
-import PasswordStrengthChecker from '@/components/password-checker/PasswordStrengthChecker';
-import PasswordGenerator from '@/components/password-generator/PasswordGenerator';
 import PasswordHealth from '@/components/dashboard/PasswordHealth';
+import { Link } from 'wouter';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   return (
@@ -67,10 +68,30 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* Password Utility Modules */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <PasswordStrengthChecker />
-        <PasswordGenerator />
+      {/* Quick Access to Tools */}
+      <div className="glass-card rounded-2xl p-6 mb-6">
+        <h2 className="text-xl font-bold mb-4">Password Utility Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="glass-card rounded-xl p-5 border border-purple-primary/10 hover:border-purple-primary/30 transition-all">
+            <h3 className="text-lg font-semibold mb-2">Password Generator</h3>
+            <p className="text-gray-400 mb-4">Create secure, randomized passwords with customizable options for length and character types.</p>
+            <Link href="/password-generator">
+              <Button className="bg-purple-primary hover:bg-purple-accent text-white">
+                Generate Passwords <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="glass-card rounded-xl p-5 border border-purple-primary/10 hover:border-purple-primary/30 transition-all">
+            <h3 className="text-lg font-semibold mb-2">Password Strength Checker</h3>
+            <p className="text-gray-400 mb-4">Test your existing passwords against security best practices and data breach databases.</p>
+            <Link href="/password-checker">
+              <Button className="bg-purple-primary hover:bg-purple-accent text-white">
+                Check Password Strength <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
       
       {/* Password Health Dashboard */}

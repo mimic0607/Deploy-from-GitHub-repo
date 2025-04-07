@@ -197,10 +197,13 @@ export default function PasswordStrengthChecker() {
       )}
       
       <Button
-        className="w-full bg-purple-primary hover:bg-purple-accent text-white py-3 rounded-full font-medium transition-fade glow-effect"
+        className="w-full bg-purple-primary hover:bg-purple-accent text-white py-3 rounded-full font-medium transition-fade glow-effect mt-2"
         onClick={handleAnalyzePassword}
         disabled={analyzing}
+        type="button"
+        size="lg"
       >
+        <CheckCircle className="h-5 w-5 mr-2" />
         {analyzing ? 'Analyzing...' : (analysis ? 'Check Another Password' : 'Check Password Strength')}
       </Button>
     </div>

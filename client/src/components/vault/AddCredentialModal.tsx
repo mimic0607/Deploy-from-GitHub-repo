@@ -182,12 +182,6 @@ export default function AddCredentialModal({ isOpen, onClose, editItem }: AddCre
           <DialogTitle className="text-xl font-bold">
             {editItem ? 'Edit Credential' : 'Add New Credential'}
           </DialogTitle>
-          <button 
-            className="absolute right-4 top-4 text-gray-400 hover:text-white transition-fade"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </button>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
