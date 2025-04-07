@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 270 60% 8%;
+    --foreground: 0 0% 100%;
+
+    --card: 270 50% 14%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 270 50% 14%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 270 100% 71%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 270 50% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 270 30% 20%;
+    --muted-foreground: 270 10% 70%;
+
+    --accent: 270 40% 20%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 270 30% 30%;
+    --input: 270 30% 30%;
+    --ring: 270 100% 71%;
+
+    --chart-1: 270 100% 71%;
+    --chart-2: 180 75% 60%;
+    --chart-3: 120 60% 60%;
+    --chart-4: 30 90% 60%;
+    --chart-5: 0 85% 60%;
+
+    --success: 142 69% 58%;
+    --warning: 38 92% 50%;
+    --danger: 0 85% 60%;
+
+    --sidebar-background: 270 60% 10%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 270 100% 71%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 40% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 270 40% 30%;
+    --sidebar-ring: 270 100% 71%;
+
+    --radius: 1.25rem;
+  }
+  
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, hsl(270 60% 8%) 0%, hsl(270 50% 14%) 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-md border border-primary/20 shadow-lg;
+  }
+  
+  .glow-effect {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  .glow-effect:hover {
+    @apply shadow-[0_0_15px_rgba(167,109,255,0.7)];
+  }
+  
+  .transition-fade {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(46, 19, 89, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(167, 109, 255, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 109, 255, 0.8);
+}
