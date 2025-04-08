@@ -66,7 +66,7 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app, __dirname);
+    serveStatic(app);
   }
 
   const port = process.env.PORT || 5000;
